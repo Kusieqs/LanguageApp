@@ -4,10 +4,14 @@ namespace LanguageApp
 	public class Language
 	{
 		public LanguageName language;
-		public Language(LanguageName language)
+		public CharLanguage charLanguage;
+		public Language(LanguageName language,CharLanguage charLanguage)
 		{
 			this.language = language;
+			this.charLanguage = charLanguage;
 		}
+		public Language()
+		{ }
 	}
 	public class Word_Description : Language
 	{
@@ -16,7 +20,7 @@ namespace LanguageApp
 		private CategoryName category;
 		private int mistakes;
 		private string unit = "";
-		public Word_Description()
+		public Word_Description(LanguageName language, CharLanguage charLanguage) :base(language,charLanguage)
 		{
 
 		}

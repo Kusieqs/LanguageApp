@@ -9,5 +9,9 @@ namespace LanguageApp
 	{
 		Word,Expression,Diffrent
 	}
+	public enum CharLanguage
+	{
+		A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,W,Y,Z
+	}
 }
 
