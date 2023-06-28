@@ -1,26 +1,21 @@
 ﻿using System;
+using Microsoft.VisualBasic;
+
 namespace LanguageApp
 {
     public static class WorkingClass
     {
-        public static void which_language(string SystemOP, ref List<Language> languages  ,bool firstTime, string slash, ref string[] ActualLanguage)
+        public static void which_language(string SystemOP, ref List<Language> languages  ,bool firstTime, string slash, ref string[] ActualData)
         {
-            StreamReader rs = null;
             string returnlan = "";
             string returnchar = "";
-            if (firstTime == true)
-                rs = new StreamReader($@"{SystemOP.Remove(SystemOP.Length - 1)}{slash}IdLanguage");
-            else
-                rs = new StreamReader($@"{SystemOP}IdLanguage");
-
         BackupToMenu:
             Console.Clear();
             Console.WriteLine("Choose one of the language (If you want to add a new language, choose 0)\n"); /// zmiana na odczytywanie z pliku tektowego
             foreach (var ChoosingLangWrite in languages)
             {
-                Console.WriteLine($"{ChoosingLangWrite.charLanguage} - {ChoosingLangWrite.language}");
+                Console.WriteLine($"{ChoosingLangWrite.CharLanguage} - {ChoosingLangWrite.Language1}");
             }
-            rs.Close();
 
             ConsoleKeyInfo result = new ConsoleKeyInfo();
             result = Console.ReadKey();
@@ -30,20 +25,17 @@ namespace LanguageApp
                 goto BackupToMenu;
             }
             else
-            {
-                bool ArrayIsCorrect = false;
-                string CopyofResult = result.ToString().ToUpper();
-                foreach (var CheckingCorrectAnswer in languages)
+            { 
+                foreach (var StringAndChar in languages)
                 {
-                    if (CheckingCorrectAnswer.charLanguage == CopyofResult)
+                    bool correctChar = char.TryParse(StringAndChar.CharLanguage, out char Letter);
+                    if(Letter == result.KeyChar)
                     {
-                        ActualLanguage[1] = CheckingCorrectAnswer.charLanguage;
-                        ActualLanguage[0] = CheckingCorrectAnswer.language;
-                        ArrayIsCorrect = true;
+                        ActualData[0] = StringAndChar.Language1;
+                        ActualData[1] = StringAndChar.CharLanguage;
                     }
                 }
-                if (ArrayIsCorrect = false)
-                    goto BackupToMenu;
+
             }
 
         }
@@ -55,6 +47,7 @@ namespace LanguageApp
                 Console.Clear();
                 Console.Write("Choose 0 to exit or write language: ");
                 namelanguage = Console.ReadLine().ToLower();
+                namelanguage = char.ToUpper(namelanguage[0]) + namelanguage.Substring(1);
 
                 if (namelanguage == "0")
                     break;
@@ -89,7 +82,7 @@ namespace LanguageApp
                 foreach (var languageName in languages)
                 {
 
-                    if (languageName.language == NameLanguage || languageName.charLanguage == Namechar)
+                    if (languageName.Language1 == namelanguage || languageName.CharLanguage == charlanguage)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\n\nThis language or index are already exist\nCLICK ENTER TO CONTINUE");
@@ -169,6 +162,47 @@ namespace LanguageApp
                 }
 
             } while (Unit == false);
+        }
+        public static void AddingWord(Word_Description w1, Language language,string unit, string SystemOp, string slash,string LanChar)
+        {
+            string word, wordInYourLanguage, category;
+            CategoryName categoryName;
+            Console.Clear();
+            bool correct;
+            do
+            {
+                Console.Clear();
+                correct = false;
+
+                word = AddingWordMethods.word_writing();
+                wordInYourLanguage = AddingWordMethods.word_in_your_language();
+                category = AddingWordMethods.category(out categoryName);
+
+
+            backup:
+                Console.Clear();
+                Console.WriteLine($"\nInformation:\n\n{word} - {wordInYourLanguage} - {categoryName}"); ///Information About Word/Expresion
+                Console.Write("\n\nDo you accept a new word? Y/N");
+
+
+                ConsoleKeyInfo answer = new ConsoleKeyInfo();
+                answer = Console.ReadKey();
+                if (answer.KeyChar == 'Y' || answer.KeyChar == 'y')
+                {
+                    correct = true;
+                }
+                else if (answer.KeyChar == 'N' || answer.KeyChar == 'n')
+                {
+                    return;
+                }
+                else
+                    goto backup;
+
+            } while (correct == false);
+
+            w1 = new Word_Description(word, wordInYourLanguage, categoryName, language);
+            w1.TextWrite(SystemOp, unit, slash, language, category,LanChar);
+
         }
 
     }

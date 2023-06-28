@@ -3,25 +3,57 @@ namespace LanguageApp
 {
 	public class Language
 	{
-		public string language;
-		public string charLanguage;
+		private string language;
+		private string charLanguage;
 		public Language(LanguageName language,CharLanguage charLanguage)
 		{
 			this.language =language.ToString();
 			this.charLanguage = charLanguage.ToString();
 		}
-		public Language()
+        public Language(string language, string charLanguage)
+        {
+			this.language = language;
+			this.charLanguage = charLanguage;
+        }
+        public Language()
 		{ }
+		public string Language1
+		{
+			get
+			{
+				return language;
+			}
+			set
+			{
+				language = value;
+			}
+		}
+		public string CharLanguage
+		{
+			get
+			{
+				return charLanguage;
+			}
+			set
+			{
+				charLanguage = value;
+			}
+		}
 	}
-	public class Word_Description : Language
+	public class Word_Description 
 	{
+		private Language language;
 		private string word;
 		private string wordInYourLanguage;
 		private CategoryName category;
 		private int mistakes;
 		private string unit = "";
-		public Word_Description(LanguageName language, CharLanguage charLanguage) :base(language,charLanguage)
+		public Word_Description(string word, string wordInYourLanguage, CategoryName category,Language language)
 		{
+			this.word = word;
+			this.wordInYourLanguage = wordInYourLanguage;
+			this.category = category;
+			mistakes = 0;
 
 		}
 		public string Word
@@ -35,7 +67,7 @@ namespace LanguageApp
 				word = value;
 			}
 		}
-		public string WordInYOurLanguage
+		public string WordInYourLanguage
 		{
 			get
 			{
@@ -79,6 +111,13 @@ namespace LanguageApp
 				unit = value;
 			}
 		}
+		public void TextWrite(string SystemOp, string unit, string slash,Language language,string category,string LanChar)
+		{
+			Console.ReadKey();
+            StreamWriter wr = File.AppendText($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}");
+            wr.WriteLine($"{Word}|{WordInYourLanguage}");
+            wr.Close();
+        }
 
 	}
 }

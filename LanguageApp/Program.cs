@@ -9,7 +9,8 @@ internal class Program
         string UserName = System.Environment.UserName;
         bool WindowsOrMac = System.Environment.OSVersion.Platform == PlatformID.Win32NT;
         string SystemOp, Slash;
-        string[] ActualLanguage = new string[2];
+        string UnitName;
+        string[] ActualData = new string[2];
         List<Language> Languages = new List<Language>();
         if (WindowsOrMac == true)
         {
@@ -24,19 +25,25 @@ internal class Program
         #endregion
         FirstTime(ref SystemOp, Slash, ref FirstTimeBool,ref Languages);
         OverridingLanguages(SystemOp, ref Languages);
-        WorkingClass.which_language(SystemOp, ref Languages, FirstTimeBool, Slash,ref ActualLanguage);
+
+        WorkingClass.which_language(SystemOp, ref Languages, FirstTimeBool, Slash, ref ActualData);
+        Console.ReadKey();
+
+        Language ActualLAN = new Language();
+        Word_Description Words = null;
+
         if(FirstTimeBool == true)
         {
+            Console.Clear();
+            Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future!");
+            Thread.Sleep(1600);
+            UnitName = "Unit1";
             for (int i = 0; i < 5; i++)
             {
-                Console.Clear();
-                Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future!");
-                Thread.Sleep(1600);
-                Console.Clear();
-                    ///Adding Word
+                Console.WriteLine("Words:\n\n");
+                WorkingClass.AddingWord(Words, ActualLAN, UnitName, SystemOp, Slash, ActualData[1]);
             }
         }  
-
         FirstTimeBool = false;
         
 
@@ -60,8 +67,11 @@ internal class Program
             Directory.CreateDirectory($@"{SystemOp}E{Slash}Unit1");
             StreamWriter Write = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}W");
             StreamWriter Write1 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}E");
+            StreamWriter Write2 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}D");
+
             Write.Close();
             Write1.Close();
+            Write2.Close();
 
             FirstTimeBool = true;
         }
