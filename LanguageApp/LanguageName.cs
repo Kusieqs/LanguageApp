@@ -3,7 +3,7 @@ namespace LanguageApp
 {
 	public enum LanguageName
 	{
-		English,French,Polish,German,Chinese,Portuguese,Spanish,Japanish,Italish,Arabic
+		English,French,Polish,German,Chinese,Portuguese,Spanish,Japanese,Italish,Arabic
 	}
 	public enum CategoryName
 	{

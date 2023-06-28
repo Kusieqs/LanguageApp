@@ -3,12 +3,12 @@ namespace LanguageApp
 {
 	public class Language
 	{
-		public LanguageName language;
-		public CharLanguage charLanguage;
+		public string language;
+		public string charLanguage;
 		public Language(LanguageName language,CharLanguage charLanguage)
 		{
-			this.language = language;
-			this.charLanguage = charLanguage;
+			this.language =language.ToString();
+			this.charLanguage = charLanguage.ToString();
 		}
 		public Language()
 		{ }

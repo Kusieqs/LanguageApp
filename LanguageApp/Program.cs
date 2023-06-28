@@ -9,7 +9,7 @@ internal class Program
         string UserName = System.Environment.UserName;
         bool WindowsOrMac = System.Environment.OSVersion.Platform == PlatformID.Win32NT;
         string SystemOp, Slash;
-        string language = "";
+        string[] ActualLanguage = new string[2];
         List<Language> Languages = new List<Language>();
         if (WindowsOrMac == true)
         {
@@ -24,25 +24,21 @@ internal class Program
         #endregion
         FirstTime(ref SystemOp, Slash, ref FirstTimeBool,ref Languages);
         OverridingLanguages(SystemOp, ref Languages);
-
-        do
+        WorkingClass.which_language(SystemOp, ref Languages, FirstTimeBool, Slash,ref ActualLanguage);
+        if(FirstTimeBool == true)
         {
-            language = WorkingClass.which_language(SystemOp, ref Languages, FirstTimeBool, Slash);
-            if(FirstTimeBool == true)
+            for (int i = 0; i < 5; i++)
             {
-                for (int i = 0; i < 5; i++)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future!");
-                    Thread.Sleep(1600);
-                    Console.Clear();
+                Console.Clear();
+                Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future!");
+                Thread.Sleep(1600);
+                Console.Clear();
                     ///Adding Word
-                }
             }
+        }  
 
-            FirstTimeBool = false;
-        } while (language == "");
-        ///UnitChoosing
+        FirstTimeBool = false;
+        
 
     }
     public static void FirstTime(ref string SystemOp, string Slash,ref bool FirstTimeBool,ref List<Language> languages)
