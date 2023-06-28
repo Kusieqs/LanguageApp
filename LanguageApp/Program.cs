@@ -5,7 +5,7 @@ internal class Program
     private static void Main(string[] args)
     {
         #region Data Reading
-        bool FirstTimeBool = false;
+        bool FirstTimeBool = false, end = true;
         string UserName = System.Environment.UserName;
         bool WindowsOrMac = System.Environment.OSVersion.Platform == PlatformID.Win32NT;
         string SystemOp, Slash;
@@ -45,7 +45,35 @@ internal class Program
             }
         }  
         FirstTimeBool = false;
-        
+        WorkingClass.ChoosingUnit(SystemOp, ActualData[0], Slash,out UnitName);
+
+        do
+        {
+        menu:
+            Console.Clear();
+            Console.WriteLine($"Choose on of the options\n\n\n1.Add Word\n2.Review\n3.Check List\n4.Change language\n5.Close\n\n\nLanguage: {ActualData[0]}\nUnit: {UnitName}"); ///menu
+
+            ConsoleKeyInfo result = new ConsoleKeyInfo();
+            result = Console.ReadKey();
+
+            if (result.KeyChar == '1')
+            {
+            }
+            else if (result.KeyChar == '2')
+            {
+            }
+            else if (result.KeyChar == '3')
+            {
+            }
+            else if (result.KeyChar == '4')
+            {
+            }
+            else if (result.KeyChar == '5')
+                end = false;
+            else
+                goto menu;
+
+        } while (end != false);
 
     }
     public static void FirstTime(ref string SystemOp, string Slash,ref bool FirstTimeBool,ref List<Language> languages)
