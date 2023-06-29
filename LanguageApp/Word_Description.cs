@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Xml.Serialization;
+using System;
 namespace LanguageApp
 {
 	public class Language
@@ -114,6 +115,7 @@ namespace LanguageApp
 		public void TextWrite(string SystemOp, string unit, string slash,Language language,string category,string LanChar)
 		{
 			Console.ReadKey();
+			
             StreamWriter wr = File.AppendText($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}");
             wr.WriteLine($"{Word}|{WordInYourLanguage}");
             wr.Close();
