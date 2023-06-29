@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 using Microsoft.VisualBasic;
 
 namespace LanguageApp
@@ -22,6 +23,9 @@ namespace LanguageApp
             if (result.KeyChar == '0')
             {
                 which_language_NewLanguage(returnchar, returnlan, ref languages, SystemOP);
+                XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
+                StreamWriter sr = new StreamWriter($"{SystemOP}Languages.xml");
+                xml.Serialize(sr, languages);
                 goto BackupToMenu;
             }
             else
@@ -212,7 +216,7 @@ namespace LanguageApp
         public static void CheckList(string language, string SystemOp, string unit, string slash)
         {
             Console.Clear();
-            Console.WriteLine("Do you want to see words or expresions? W/E");
+            Console.WriteLine("Do you want to see words,expresions,Diffrent? W/E/D");
         Backup:
             string choose;
             ConsoleKeyInfo key1 = new ConsoleKeyInfo();
@@ -221,9 +225,13 @@ namespace LanguageApp
             {
                 choose = "W";
             }
-            else if (key1.KeyChar == 'e' || key1.KeyChar == 'e')
+            else if (key1.KeyChar == 'E' || key1.KeyChar == 'e')
             {
                 choose = "E";
+            }
+            else if(key1.KeyChar=='d'|| key1.KeyChar =='D')
+            {
+                choose = "D";
             }
             else
                 goto Backup;
@@ -244,14 +252,7 @@ namespace LanguageApp
 
             } while (teskt != null);
 
-            if (count == 1 && choose == "E")
-            {
-                Console.WriteLine("No Expressions");
-            }
-            else if (count == 1 && choose == "W")
-            {
-                Console.WriteLine("No Words");
-            }
+
 
             rd.Close();
             Console.WriteLine("\n\nIf you want to remove any line write a number of line (Write 0 to exit)");
