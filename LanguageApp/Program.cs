@@ -58,15 +58,24 @@ internal class Program
 
             if (result.KeyChar == '1')
             {
+                WorkingClass.AddingWord(Words, ActualLAN, UnitName, SystemOp, Slash, ActualData[1]);
             }
             else if (result.KeyChar == '2')
             {
+                Review.MainReveiw(ActualData[1], SystemOp, UnitName, Slash);
             }
             else if (result.KeyChar == '3')
             {
+                WorkingClass.CheckList(ActualData[1], SystemOp, UnitName, Slash);
             }
             else if (result.KeyChar == '4')
             {
+                Console.Clear();
+                Languages.Clear();
+                OverridingLanguages(SystemOp, ref Languages);
+                WorkingClass.which_language(SystemOp,ref Languages, FirstTimeBool,Slash,ref ActualData);
+                WorkingClass.ChoosingUnit(SystemOp,ActualData[0], Slash, out UnitName);
+
             }
             else if (result.KeyChar == '5')
                 end = false;
