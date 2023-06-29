@@ -196,7 +196,7 @@ namespace LanguageApp
                 correctAnswer = true;
             }
         }
-		public static void MainReveiw(char language, string SystemOp, string unit, string slash)
+		public static void MainReveiw(string language, string SystemOp, string unit, string slash)
 		{
             int Mistakes = 0;
             ConsoleKeyInfo key;
