@@ -50,7 +50,7 @@ internal class Program
         {
         menu:
             Console.Clear();
-            Console.WriteLine($"Choose on of the options\n\n\n1.Add Word\n2.Review\n3.Check List\n4.Change language\n5.Close\n\n\nLanguage: {ActualData[0]}\nUnit: {UnitName}"); ///menu
+            Console.WriteLine($"Choose on of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Close\n\n\nLanguage: {ActualData[0]}\nUnit: {UnitName}"); ///menu
 
             ConsoleKeyInfo result = new ConsoleKeyInfo();
             result = Console.ReadKey();
@@ -59,15 +59,34 @@ internal class Program
             {
                 WorkingClass.AddingWord(Words, ActualLAN, UnitName, SystemOp, Slash, ActualData[1]);
             }
-            else if (result.KeyChar == '2')
+            else if(result.KeyChar == '2')
             {
-                Review.MainReveiw(ActualData[1], SystemOp, UnitName, Slash);
+                Console.Clear();
+                Console.WriteLine("Write number of words which do you want to add. (Max 20 words)");
+                Console.Write("\nNumber: ");
+                int numberOfWords = int.Parse(Console.ReadLine());
+                if(numberOfWords == 0 || numberOfWords < 0 || numberOfWords >20)
+                {
+                    continue;
+                }
+                else 
+                {
+                    for (int i = 0; i < numberOfWords; i++)
+                    {
+                        WorkingClass.AddingWord(Words, ActualLAN, UnitName, SystemOp, Slash, ActualData[1]);
+                    }
+                }    
+                
             }
             else if (result.KeyChar == '3')
             {
-                WorkingClass.CheckList(ActualData[1], SystemOp, UnitName, Slash);
+                Review.MainReveiw(ActualData[1], SystemOp, UnitName, Slash);
             }
             else if (result.KeyChar == '4')
+            {
+                WorkingClass.CheckList(ActualData[1], SystemOp, UnitName, Slash);
+            }
+            else if (result.KeyChar == '5')
             {
                 Console.Clear();
                 Languages.Clear();
@@ -76,7 +95,7 @@ internal class Program
                 WorkingClass.ChoosingUnit(SystemOp,ActualData[0], Slash, out UnitName);
 
             }
-            else if (result.KeyChar == '5')
+            else if (result.KeyChar == '6')
                 end = false;
             else
                 goto menu;
