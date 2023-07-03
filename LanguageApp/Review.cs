@@ -19,6 +19,7 @@ namespace LanguageApp
 
             WordsInLanguage.Remove(WordsInLanguage.Last());
 
+
             if (count > HowMany)
             {
                 for (int i = 0; i < HowMany; i++)
@@ -170,30 +171,26 @@ namespace LanguageApp
 
 
         }
-        private static void HowManyWords(ref int max, ref int min, ref bool correctAnswer,ConsoleKeyInfo k1, ref bool Legendary)
+        private static void HowManyWords(ref int max, ref int min,ConsoleKeyInfo k1, ref bool Legendary)
         {
             if(k1.KeyChar == '1')
             {
                 min = 10;
                 max = 10;
-                correctAnswer = true;
             }
             else if(k1.KeyChar =='2')
             {
                 min = 10;
                 max = 30;
-                correctAnswer = true;
             }
             else if (k1.KeyChar =='3')
             {
                 min = 30;
                 max = 50;
-                correctAnswer = true;
             }
             else if (k1.KeyChar =='4')
             {
                 Legendary = true;
-                correctAnswer = true;
             }
         }
 		public static void MainReveiw(string language, string SystemOp, string unit, string slash)
@@ -219,7 +216,8 @@ namespace LanguageApp
                     k1 = Console.ReadKey();
                     if (k1.KeyChar == '1' || k1.KeyChar=='2' ||k1.KeyChar =='3' || k1.KeyChar =='4')
                     {
-                        HowManyWords(ref Max, ref Min, ref correctAnswer, key, ref Legendary);
+                        HowManyWords(ref Max, ref Min, k1, ref Legendary);
+                        correctAnswer = true;
                     }
                     else
                     {
@@ -231,13 +229,12 @@ namespace LanguageApp
             } while (correctAnswer == false);
 
 
-            SystemOp += SystemOp + language + slash;
+            SystemOp += language + slash;
 
 
-            string word = File.ReadAllText($@"{SystemOp}{unit}{slash}{key.KeyChar}");
-            string expresion = File.ReadAllText($@"{SystemOp}{unit}{slash}{key.KeyChar}");
+            string review = File.ReadAllText($@"{SystemOp}{unit}{slash}{key.KeyChar}");
 
-            if ((!string.IsNullOrWhiteSpace(word) && key.KeyChar == 'W') || (!string.IsNullOrWhiteSpace(expresion) && key.KeyChar == 'E'))
+            if ((!string.IsNullOrWhiteSpace(review)))
             {
                 StreamReader rd = new StreamReader($@"{SystemOp}{unit}{slash}{key.KeyChar}");
                 string teskt = "";
@@ -249,6 +246,7 @@ namespace LanguageApp
                 rd.Close();
 
 
+                Console.ReadKey();
 
                 if (Legendary == true)
                 {

@@ -8,40 +8,44 @@ namespace LanguageApp
     {
         public static void which_language(string SystemOP, ref List<Language> languages, bool firstTime, string slash, ref string[] ActualData)
         {
+            Array.Clear(ActualData);
             string returnlan = "";
             string returnchar = "";
-        BackupToMenu:
-            Console.Clear();
-            Console.WriteLine("Choose one of the language (If you want to add a new language, choose 0)\n"); /// zmiana na odczytywanie z pliku tektowego
-            foreach (var ChoosingLangWrite in languages)
+            do
             {
-                Console.WriteLine($"{ChoosingLangWrite.CharLanguage} - {ChoosingLangWrite.Language1}");
-            }
-
-            ConsoleKeyInfo result = new ConsoleKeyInfo();
-            result = Console.ReadKey();
-            if (result.KeyChar == '0')
-            {
-                which_language_NewLanguage(returnchar, returnlan, ref languages, SystemOP);
-                XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
-                StreamWriter sr = new StreamWriter($"{SystemOP}Languages.xml");
-                xml.Serialize(sr, languages);
-                goto BackupToMenu;
-            }
-            else
-            {
-                foreach (var StringAndChar in languages)
+                Console.Clear();
+                Console.WriteLine("Choose one of the language (If you want to add a new language, choose 0)\n"); /// zmiana na odczytywanie z pliku tektowego
+                foreach (var ChoosingLangWrite in languages)
                 {
-                    bool correctChar = char.TryParse(StringAndChar.CharLanguage, out char Letter);
-                    if (Letter == result.KeyChar)
+                    Console.WriteLine($"{ChoosingLangWrite.CharLanguage} - {ChoosingLangWrite.Language1}");
+                }
+
+                ConsoleKeyInfo result = new ConsoleKeyInfo();
+                result = Console.ReadKey();
+
+                if (result.KeyChar == '0')
+                {
+                    which_language_NewLanguage(returnchar, returnlan, ref languages, SystemOP);
+                    XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
+                    StreamWriter sr = new StreamWriter($"{SystemOP}Languages.xml");
+                    xml.Serialize(sr, languages);
+                }
+                else
+                {
+                    foreach (var StringAndChar in languages)
                     {
-                        ActualData[0] = StringAndChar.Language1;
-                        ActualData[1] = StringAndChar.CharLanguage;
+                        bool correctChar = char.TryParse(StringAndChar.CharLanguage, out char Letter);
+                        if (Letter == result.KeyChar)
+                        {
+                            ActualData[0] = StringAndChar.Language1;
+                            ActualData[1] = StringAndChar.CharLanguage;
+                        }
                     }
                 }
 
-            }
 
+            } while (string.IsNullOrEmpty(ActualData[1]) || string.IsNullOrEmpty(ActualData[0]));
+            Console.Clear();
         }
         private static void which_language_NewLanguage(string charlanguage, string namelanguage, ref List<Language> languages, string SystemOP)
         {
@@ -190,7 +194,7 @@ namespace LanguageApp
 
             backup:
                 Console.Clear();
-                Console.WriteLine($"\nInformation:\n\n{word} - {wordInYourLanguage} - {categoryName}"); ///Information About Word/Expresion
+                Console.WriteLine($"\nInformation:\n\n{word} - {wordInYourLanguage}\n\nCategory: {categoryName}\nUnit: {unit}"); ///Information About Word/Expresion
                 Console.Write("\n\nDo you accept a new word? Y/N");
 
 
@@ -208,6 +212,7 @@ namespace LanguageApp
                     goto backup;
 
             } while (correct == false);
+            Console.Clear();
 
             w1 = new Word_Description(word, wordInYourLanguage, categoryName, language);
             w1.TextWrite(SystemOp, unit, slash, language, category, LanChar);
@@ -216,7 +221,7 @@ namespace LanguageApp
         public static void CheckList(string language, string SystemOp, string unit, string slash)
         {
             Console.Clear();
-            Console.WriteLine("Do you want to see words,expresions,Diffrent? W/E/D");
+            Console.WriteLine("Do you want to see words,expresions,diffrent? W/E/D");
         Backup:
             string choose;
             ConsoleKeyInfo key1 = new ConsoleKeyInfo();
@@ -255,7 +260,7 @@ namespace LanguageApp
 
 
             rd.Close();
-            Console.WriteLine("\n\nIf you want to remove any line write a number of line (Write 0 to exit)");
+            Console.WriteLine("\n\nIf you want to remove any line, write a number of line (write 0 to exit)");
             Console.Write("Number: ");
 
             bool correct = int.TryParse(Console.ReadLine(), out int result);

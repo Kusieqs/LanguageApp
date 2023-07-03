@@ -27,7 +27,6 @@ internal class Program
         OverridingLanguages(SystemOp, ref Languages);
 
         WorkingClass.which_language(SystemOp, ref Languages, FirstTimeBool, Slash, ref ActualData);
-        Console.ReadKey();
 
         Language ActualLAN = new Language();
         Word_Description Words = null;

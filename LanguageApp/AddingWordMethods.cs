@@ -7,7 +7,7 @@ namespace LanguageApp
         {
         Backup:
             Console.Clear();
-            Console.Write($"Write a word in another Language:    ");
+            Console.Write($"Write a word in another language:    ");
             string word = Console.ReadLine();
             if (word.Length == 0)
                 goto Backup;
