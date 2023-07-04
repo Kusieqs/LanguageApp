@@ -2,8 +2,12 @@
 namespace LanguageApp;
 internal class Program
 {
+
     private static void Main(string[] args)
     {
+        List<Word_Description> ListOfWords = new List<Word_Description>();
+        List<Language> Languages = new List<Language>();
+
         #region Data Reading
         bool FirstTimeBool = false, end = true;
         string UserName = System.Environment.UserName;
@@ -11,7 +15,6 @@ internal class Program
         string SystemOp, Slash;
         string UnitName;
         string[] ActualData = new string[2];
-        List<Language> Languages = new List<Language>();
         if (WindowsOrMac == true)
         {
             SystemOp = $@"C:\Users\{UserName}\Desktop\"; ///Windows
@@ -23,12 +26,13 @@ internal class Program
             Slash = @"/";
         }
         #endregion
-        FirstTime(ref SystemOp, Slash, ref FirstTimeBool,ref Languages);
+
+        FirstTime(ref SystemOp, Slash, ref FirstTimeBool,ref Languages, ListOfWords);
         OverridingLanguages(SystemOp, ref Languages);
 
         WorkingClass.which_language(SystemOp, ref Languages, FirstTimeBool, Slash, ref ActualData);
 
-        Language ActualLAN = new Language();
+        Language ActualLAN = new Language(ActualData[0], ActualData[1]);
         Word_Description Words = null;
 
         if(FirstTimeBool == true)
@@ -44,7 +48,7 @@ internal class Program
             }
         }  
         FirstTimeBool = false;
-        WorkingClass.ChoosingUnit(SystemOp, ActualData[0], Slash,out UnitName);
+        WorkingClass.ChoosingUnit(SystemOp, ActualData[0], Slash,out UnitName, ListOfWords);
 
         do
         {
@@ -92,7 +96,7 @@ internal class Program
                 Languages.Clear();
                 OverridingLanguages(SystemOp, ref Languages);
                 WorkingClass.which_language(SystemOp,ref Languages, FirstTimeBool,Slash,ref ActualData);
-                WorkingClass.ChoosingUnit(SystemOp,ActualData[0], Slash, out UnitName);
+                WorkingClass.ChoosingUnit(SystemOp,ActualData[0], Slash, out UnitName, ListOfWords);
 
             }
             else if (result.KeyChar == '6')
@@ -103,16 +107,18 @@ internal class Program
         } while (end != false);
 
     }
-    public static void FirstTime(ref string SystemOp, string Slash,ref bool FirstTimeBool,ref List<Language> languages)
+    public static void FirstTime(ref string SystemOp, string Slash,ref bool FirstTimeBool,ref List<Language> languages, List<Word_Description> xmlList)
     {
         if (!Directory.Exists($"{SystemOp}LanguageApp"))
         {
+            XmlSerializer xmlMainWord = new XmlSerializer(typeof(List<Word_Description>));
+            XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
+
             Directory.CreateDirectory($"{SystemOp}LanguageApp");
             SystemOp += @$"LanguageApp{Slash}";
 
             Language l1 = new Language(LanguageName.English,CharLanguage.E);
             languages.Add(l1);
-            XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
             StreamWriter strw = new StreamWriter(@$"{SystemOp}Languages.xml");
             xml.Serialize(strw, languages);
             strw.Dispose();
@@ -120,9 +126,13 @@ internal class Program
 
             Directory.CreateDirectory($"{SystemOp}E");
             Directory.CreateDirectory($@"{SystemOp}E{Slash}Unit1");
-            StreamWriter Write = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}W");
-            StreamWriter Write1 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}E");
-            StreamWriter Write2 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}D");
+            StreamWriter Write = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}W.xml");
+            StreamWriter Write1 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}E.xml");
+            StreamWriter Write2 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}D.xml");
+
+            xmlMainWord.Serialize(Write, xmlList);
+            xmlMainWord.Serialize(Write1, xmlList);
+            xmlMainWord.Serialize(Write2, xmlList);
 
             Write.Close();
             Write1.Close();

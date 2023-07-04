@@ -111,7 +111,7 @@ namespace LanguageApp
             } while (end == false);
 
         }
-        public static void ChoosingUnit(string SystemOp, string language, string Slash, out string UnitName)
+        public static void ChoosingUnit(string SystemOp, string language, string Slash, out string UnitName,List<Word_Description> MainList)
         {
             UnitName = string.Empty;
             bool Unit = false;
@@ -144,10 +144,15 @@ namespace LanguageApp
                     string NewUnit = Console.ReadLine();
                     if (!Directory.Exists($"{SystemOp}{language[0]}{Slash}{NewUnit}"))
                     {
+                        XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
                         Directory.CreateDirectory($"{SystemOp}{language[0]}{Slash}{NewUnit}");
                         StreamWriter wr = new StreamWriter($@"{SystemOp}{language[0]}{Slash}{NewUnit}{Slash}W");
                         StreamWriter wr2 = new StreamWriter($@"{SystemOp}{language[0]}{Slash}{NewUnit}{Slash}E");
                         StreamWriter wr3 = new StreamWriter($@"{SystemOp}{language[0]}{Slash}{NewUnit}{Slash}D");
+
+                        xml.Serialize(wr, MainList);
+                        xml.Serialize(wr2, MainList);
+                        xml.Serialize(wr3, MainList);
                         wr.Close();
                         wr2.Close();
                         wr3.Close();
@@ -214,8 +219,25 @@ namespace LanguageApp
             } while (correct == false);
             Console.Clear();
 
-            w1 = new Word_Description(word, wordInYourLanguage, categoryName, language);
-            w1.TextWrite(SystemOp, unit, slash, language, category, LanChar);
+            List<Word_Description> MainList = new List<Word_Description>();
+            XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
+            StreamReader sr = new StreamReader($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}.xml");
+            StreamWriter sw = new StreamWriter($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}.xml");
+
+            w1 = new Word_Description(word, wordInYourLanguage, categoryName, language, unit);
+            try
+            {
+                MainList = xml.Deserialize(sr) as List<Word_Description>;
+                MainList.Add(w1);
+                xml.Serialize(sw, MainList); //// PROBLEM!
+            }
+            catch
+            { }
+            finally
+            {
+                MainList.Add(w1);
+                xml.Serialize(sw, MainList);
+            }
 
         }
         public static void CheckList(string language, string SystemOp, string unit, string slash)
@@ -245,18 +267,15 @@ namespace LanguageApp
         Backup1:
             int count = 0;
             Console.Clear();
-            string teskt = "";
-            StreamReader rd = new StreamReader($@"{SystemOp}{language}{slash}{unit}{slash}{choose}");
-            do
+            StreamReader rd = new StreamReader($@"{SystemOp}{language}{slash}{unit}{slash}{choose}.xml");
+            XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
+            List<Word_Description> MainList = xml.Deserialize(rd) as List<Word_Description>;
+            int x = 1;
+            foreach (var Words in MainList)
             {
-                count++;
-                teskt = rd.ReadLine();
-                if (string.IsNullOrWhiteSpace(teskt))
-                    break;
-                Console.WriteLine($"{count}. " + teskt);
-
-            } while (teskt != null);
-
+                Console.WriteLine($"{x}. {Words.Word} - - - - - {Words.WordInYourLanguage} - - - - - Mistakes: {Words.Mistakes}");
+                x++;
+            }
 
 
             rd.Close();
@@ -270,12 +289,9 @@ namespace LanguageApp
             }
             else if (correct == true)
             {
-                string filePath = $@"{SystemOp}{language}{slash}{unit}{slash}{choose}";
-                int lineToDelete = result - 1;
-
-                string[] lines = File.ReadAllLines(filePath).Where((line, index) => index != lineToDelete).ToArray();
-
-                File.WriteAllLines(filePath, lines);
+                MainList.RemoveAt(result-1);
+                StreamWriter sr = new StreamWriter($@"{SystemOp}{language}{slash}{unit}{slash}{choose}.xml");
+                xml.Serialize(sr, MainList);
                 goto Backup1;
 
             }

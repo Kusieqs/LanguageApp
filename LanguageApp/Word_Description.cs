@@ -2,7 +2,7 @@
 using System;
 namespace LanguageApp
 {
-	public class Language
+    public class Language
 	{
 		private string language;
 		private string charLanguage;
@@ -41,22 +41,26 @@ namespace LanguageApp
 			}
 		}
 	}
-	public class Word_Description 
-	{
+	public class Word_Description
+	{ 
 		private Language language;
 		private string word;
 		private string wordInYourLanguage;
 		private CategoryName category;
 		private int mistakes;
-		private string unit = "";
-		public Word_Description(string word, string wordInYourLanguage, CategoryName category,Language language)
+		private string unit;
+		public Word_Description(string word, string wordInYourLanguage, CategoryName category,Language language,string unit)
 		{
 			this.word = word;
 			this.wordInYourLanguage = wordInYourLanguage;
 			this.category = category;
 			mistakes = 0;
+			this.language = language;
+			this.unit = unit;
 
 		}
+		public Word_Description()
+		{ }
 		public string Word
 		{
 			get
@@ -112,12 +116,6 @@ namespace LanguageApp
 				unit = value;
 			}
 		}
-		public void TextWrite(string SystemOp, string unit, string slash,Language language,string category,string LanChar)
-		{	
-            StreamWriter wr = File.AppendText($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}");
-            wr.WriteLine($"{Word}|{WordInYourLanguage}");
-            wr.Close();
-        }
 
 	}
 }
