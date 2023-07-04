@@ -41,12 +41,12 @@ namespace LanguageApp
 			}
 		}
 	}
-	public class Word_Description
+	public class Word_Description // W nazwie klasy nie uzywamy podlogi. Powinno byc WordDescription.
 	{ 
-		private Language language;
+		private Language language; //prywatne pola oznaczamy w ten sposob: _language
 		private string word;
-		private string wordInYourLanguage;
-		private CategoryName category;
+		private string wordInYourLanguage; //_wordInYourLanguage i z innymi to samo.
+        private CategoryName category;
 		private int mistakes;
 		private string unit;
 		public Word_Description(string word, string wordInYourLanguage, CategoryName category,Language language,string unit)
@@ -61,8 +61,8 @@ namespace LanguageApp
 		}
 		public Word_Description()
 		{ }
-		public string Word
-		{
+		public string Word //Nie musisz uzywac rozbudowanych wlasciwosci jesli nie masz w nich zaimplementowanej logiki. Możesz zrobić tak: public string Word { get; set; }
+        {
 			get
 			{
 				return word;
@@ -72,6 +72,8 @@ namespace LanguageApp
 				word = value;
 			}
 		}
+
+        
 		public string WordInYourLanguage
 		{
 			get

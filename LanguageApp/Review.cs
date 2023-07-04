@@ -4,10 +4,10 @@ namespace LanguageApp
 {
 	public static class Review
 	{
-		public static void MainReveiw(string language, string SystemOp, string unit, string slash)
+		public static void MainReveiw(string language, string SystemOp, string unit, string slash) //popraw nazwe drugiego parametru funkcji i literowke w nazwie.
 		{
             
-            int Mistakes = 0;
+            int Mistakes = 0; // zmienne z malej
             ConsoleKeyInfo key;
             int Max = 0, Min = 0;
             bool Legendary = false;
@@ -33,12 +33,12 @@ namespace LanguageApp
                     }
                     else
                     {
-                        continue;
+                        continue; // to continue nic nie robi. Jezeli warunek nie zostanie spelniony to i tak zostanie to pominiete.
                     }
                 }
                 else
-                    continue;
-            } while (correctAnswer == false);
+                    continue; //tu tak samo.
+            } while (correctAnswer == false); // mozna tez tak if (!correctAnswer)
 
 
             SystemOp += language + slash;
@@ -47,7 +47,7 @@ namespace LanguageApp
             StreamReader sr = new StreamReader($@"{SystemOp}{unit}{slash}{key.KeyChar}");
             List<Word_Description> MainList = xml.Deserialize(sr) as List<Word_Description>;
 
-            if (MainList.Count != 0)
+            if (MainList.Count != 0) 
             {
                 int CountingLines = MainList.Count;
 
@@ -73,7 +73,7 @@ namespace LanguageApp
             }
 
         }
-        private static void Levels(string SystemOp,string slash, ConsoleKeyInfo key, string unit, int Min, int Max, ref int Mistakes, int count, List<Word_Description> MainList)
+        private static void Levels(string SystemOp,string slash, ConsoleKeyInfo key, string unit, int Min, int Max, ref int Mistakes, int count, List<Word_Description> MainList) //trochę za dużo, im mniej funkcja przyjmuje parametrow tym latwiej ja obsluzyc bez bledow. Np. nie musisz console key podawac do funkcji tylko mozesz przyjmowac klawisz w jej srodku.
         {
             Random random = new Random();
             int HowMany = random.Next(Min, Max + 1);
@@ -83,12 +83,12 @@ namespace LanguageApp
                 for (int i = 0; i < HowMany; i++)
                 {
                     int RandomWord = random.Next(0, MainList.Count);
-                Backup1:
+                Backup1: //nie uzywaj goto.
                     Console.Clear();
-                    Console.Write(MainList[RandomWord].WordInYourLanguage + " - - - - - ");
+                    Console.Write(MainList[RandomWord].WordInYourLanguage + " - - - - - ");//zamiast hardcodowania odstepow jest taka funkcja jak PadLeft/right. Ew w interpolacji mozna ustawiać odstępy.
                     string Attempt = Console.ReadLine();
 
-                    if (MainList[RandomWord].Word.ToUpper() != Attempt.ToUpper())
+                    if (MainList[RandomWord].Word.ToUpper() != Attempt.ToUpper()) //bezpieczniej by tu bylo uzywac linq albo slownikow z funkcja TryGetValue(), albo jak juz chcesz tak to najpierw sprawdzaj czy lista nie jest pusta i czy ma tyle indexow.
                     {
                         Mistakes++;
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -99,9 +99,9 @@ namespace LanguageApp
                     }
 
                     Console.WriteLine("Correct\nClick Enter to continue");
-                Backup2:
+                Backup2:// nie uzywaj goto
                     Console.Clear();
-                    Console.Write(MainList[RandomWord].Word + " - - - - - ");
+                    Console.Write(MainList[RandomWord].Word + " - - - - - "); //PadLeft/Righ 
                     Attempt = Console.ReadLine();
 
                     if (MainList[RandomWord].WordInYourLanguage.ToUpper() != Attempt.ToUpper()) 
@@ -130,9 +130,9 @@ namespace LanguageApp
                 for (int i = 0; i < HowMany; i++)
                 {
                     int RandomWord = random.Next(0, MainList.Count);
-                Backup1:
+                Backup1: //goto
                     Console.Clear();
-                    Console.Write(MainList[RandomWord].WordInYourLanguage + " - - - - - ");
+                    Console.Write(MainList[RandomWord].WordInYourLanguage + " - - - - - ");//PadLeft/Right
                     string Attempt = Console.ReadLine();
 
                     if (MainList[RandomWord].Word.ToUpper() != Attempt.ToUpper())
@@ -142,7 +142,7 @@ namespace LanguageApp
                         Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
                         Console.ResetColor();
                         Console.Read();
-                        goto Backup1;
+                        goto Backup1;// goto
                     }
                     Console.WriteLine("Correct\nClick Enter to continue");
                 Backup2:
@@ -171,13 +171,13 @@ namespace LanguageApp
             Console.Read();
 
         }
-        private static void LegendaryLvl(string SystemOp, string slash, ConsoleKeyInfo key, string unit, ref int Mistakes, int count, List<Word_Description> MainList)
+        private static void LegendaryLvl(string SystemOp, string slash, ConsoleKeyInfo key, string unit, ref int Mistakes, int count, List<Word_Description> MainList) //za duzo parametrow. Zazwyczaj jesli funkcja przyjmuje ich wiecej niz 3 to znak ze trzeba sie zastanowic nad przerobieniem funkcji.
         {
             foreach (var Words in MainList)
             {
-            Backup1:
+            Backup1: //goto
                 Console.Clear();
-                Console.Write(Words.WordInYourLanguage + " - - - - - ");
+                Console.Write(Words.WordInYourLanguage + " - - - - - ");//pad
                 string Attempt = Console.ReadLine();
 
                 if (Words.Word.ToUpper() != Attempt.ToUpper())
@@ -187,12 +187,12 @@ namespace LanguageApp
                     Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
                     Console.ResetColor();
                     Console.Read();
-                    goto Backup1;
+                    goto Backup1;//goto
                 }
                 Console.WriteLine("Correct\nClick Enter to continue");
             Backup2:
                 Console.Clear();
-                Console.Write(Words.Word + " - - - - - ");
+                Console.Write(Words.Word + " - - - - - ");//pad
                 Attempt = Console.ReadLine();
 
                 if (Words.WordInYourLanguage.ToUpper() != Attempt.ToUpper())
@@ -202,7 +202,7 @@ namespace LanguageApp
                     Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
                     Console.ResetColor();
                     Console.Read();
-                    goto Backup2;
+                    goto Backup2; //goto
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"\nCorrect\nClick Enter to continue");
@@ -217,7 +217,7 @@ namespace LanguageApp
         }
         private static void HowManyWords(ref int max, ref int min,ConsoleKeyInfo k1, ref bool Legendary)
         {
-            if(k1.KeyChar == '1')
+            if(k1.KeyChar == '1') //switch bedzie lepsza opcja
             {
                 min = 10;
                 max = 10;

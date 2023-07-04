@@ -6,10 +6,10 @@ namespace LanguageApp
 {
     public static class WorkingClass
     {
-        public static void which_language(string SystemOP, ref List<Language> languages, bool firstTime, string slash, ref string[] ActualData)
+        public static void which_language(string SystemOP, ref List<Language> languages, bool firstTime, string slash, ref string[] ActualData) // za duzo zmiennych i zle nazewnictwo funkcji i niektorych zmiennych
         {
             Array.Clear(ActualData);
-            string returnlan = "";
+            string returnlan = "";// nie uzywaj skrotow, lepiej bedzie returnLanguage.
             string returnchar = "";
             do
             {
@@ -34,7 +34,7 @@ namespace LanguageApp
                 {
                     foreach (var StringAndChar in languages)
                     {
-                        bool correctChar = char.TryParse(StringAndChar.CharLanguage, out char Letter);
+                        bool correctChar = char.TryParse(StringAndChar.CharLanguage, out char Letter); //Nigdzie nie uzywasz correctChar, więc nie musisz tryparse przypisywac do zmiennej.
                         if (Letter == result.KeyChar)
                         {
                             ActualData[0] = StringAndChar.Language1;
@@ -44,10 +44,10 @@ namespace LanguageApp
                 }
 
 
-            } while (string.IsNullOrEmpty(ActualData[1]) || string.IsNullOrEmpty(ActualData[0]));
+            } while (string.IsNullOrEmpty(ActualData[1]) || string.IsNullOrEmpty(ActualData[0])); //mozesz sprawdzac cala tablice czy jest pusta zamiast poszczegolne elementy
             Console.Clear();
         }
-        private static void which_language_NewLanguage(string charlanguage, string namelanguage, ref List<Language> languages, string SystemOP)
+        private static void which_language_NewLanguage(string charlanguage, string namelanguage, ref List<Language> languages, string SystemOP)//zle nazewnictwo funkcji i niektorych zmiennych
         {
             bool end = false;
             do
@@ -60,7 +60,7 @@ namespace LanguageApp
                 if (namelanguage == "0")
                     break;
 
-                bool correctenum = Enum.TryParse(namelanguage, out LanguageName NameLanguage);
+                bool correctenum = Enum.TryParse(namelanguage, out LanguageName NameLanguage); //correctEnum
                 if (correctenum == false)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -75,7 +75,7 @@ namespace LanguageApp
                 if (charlanguage == "0")
                     break;
 
-                bool correctindex = Enum.TryParse(charlanguage, out CharLanguage Namechar);
+                bool correctindex = Enum.TryParse(charlanguage, out CharLanguage Namechar); //zla nazwa zmiennej
                 if (correctindex == false)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -96,7 +96,7 @@ namespace LanguageApp
                         Console.WriteLine("\n\nThis language or index are already exist\nCLICK ENTER TO CONTINUE");
                         Console.ReadKey();
                         Console.ResetColor();
-                        continue;
+                        continue;// to continue nic nie robi bo iteracja petli i tak sie tu konczy.
                     }
                 }
 
@@ -111,9 +111,9 @@ namespace LanguageApp
             } while (end == false);
 
         }
-        public static void ChoosingUnit(string SystemOp, string language, string Slash, out string UnitName,List<Word_Description> MainList)
+        public static void ChoosingUnit(string SystemOp, string language, string Slash, out string UnitName,List<Word_Description> MainList) //za duzo zmiennych i zle nazwy
         {
-            UnitName = string.Empty;
+            UnitName = string.Empty; // z malej ma byc
             bool Unit = false;
             do
             {
@@ -156,19 +156,19 @@ namespace LanguageApp
                         wr.Close();
                         wr2.Close();
                         wr3.Close();
-                        continue;
+                        continue; //to continue nic nie robi bo jest koniec warunku.
                     }
                     else if (NewUnit == "0")
                     {
                         Console.WriteLine("\n\nYoo can't write 0 as a name\nClick Enter to continue");
                         Console.ReadKey();
-                        continue;
+                        continue; //to tez
                     }
                     else
                     {
                         Console.WriteLine("\n\nDirectory is existing\nClick Enter to continue");
                         Console.ReadKey();
-                        continue;
+                        continue; //i to tez
                     }
                 }
                 else
@@ -181,7 +181,7 @@ namespace LanguageApp
             } while (Unit == false);
 
         }
-        public static void AddingWord(Word_Description w1, Language language, string unit, string SystemOp, string slash, string LanChar)
+        public static void AddingWord(Word_Description w1, Language language, string unit, string SystemOp, string slash, string LanChar) //za duzo zmiennych i zle nazwy.
         {
             string word, wordInYourLanguage, category;
             CategoryName categoryName;
@@ -205,7 +205,7 @@ namespace LanguageApp
 
                 ConsoleKeyInfo answer = new ConsoleKeyInfo();
                 answer = Console.ReadKey();
-                if (answer.KeyChar == 'Y' || answer.KeyChar == 'y')
+                if (answer.KeyChar == 'Y' || answer.KeyChar == 'y') //ToLower i porownujesz tylko z mala albo na odwrot. nie musisz wtedy obu przypadkow sprawdzac
                 {
                     correct = true;
                 }
@@ -214,7 +214,7 @@ namespace LanguageApp
                     return;
                 }
                 else
-                    goto backup;
+                    goto backup; //Nie uzywaj goto
 
             } while (correct == false);
             Console.Clear();
@@ -222,7 +222,7 @@ namespace LanguageApp
             List<Word_Description> MainList = new List<Word_Description>();
             XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
             StreamReader sr = new StreamReader($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}.xml");
-            StreamWriter sw = new StreamWriter($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}.xml");
+            StreamWriter sw = new StreamWriter($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}.xml"); //ulatwisz sobie znacznie zycie jak przerzucisz sie na jsona.
 
             w1 = new Word_Description(word, wordInYourLanguage, categoryName, language, unit);
             try
@@ -231,7 +231,7 @@ namespace LanguageApp
                 MainList.Add(w1);
                 xml.Serialize(sw, MainList); //// PROBLEM!
             }
-            catch
+            catch // przechwytujesz blad ale nic z nim nie robisz co moze prowadzic do ukrywania bledow i nie bedziesz wiedzial czemu Ci cos nie dziala.
             { }
             finally
             {
@@ -240,7 +240,7 @@ namespace LanguageApp
             }
 
         }
-        public static void CheckList(string language, string SystemOp, string unit, string slash)
+        public static void CheckList(string language, string SystemOp, string unit, string slash)// zle nazwy zmiennych
         {
             Console.Clear();
             Console.WriteLine("Do you want to see words,expresions,diffrent? W/E/D");
@@ -248,7 +248,7 @@ namespace LanguageApp
             string choose;
             ConsoleKeyInfo key1 = new ConsoleKeyInfo();
             key1 = Console.ReadKey();
-            if (key1.KeyChar == 'W' || key1.KeyChar == 'w')
+            if (key1.KeyChar == 'W' || key1.KeyChar == 'w') //proponowalbym switcha
             {
                 choose = "W";
             }
@@ -261,19 +261,19 @@ namespace LanguageApp
                 choose = "D";
             }
             else
-                goto Backup;
+                goto Backup;//goto
 
 
-        Backup1:
+        Backup1: //goto
             int count = 0;
             Console.Clear();
             StreamReader rd = new StreamReader($@"{SystemOp}{language}{slash}{unit}{slash}{choose}.xml");
             XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
             List<Word_Description> MainList = xml.Deserialize(rd) as List<Word_Description>;
             int x = 1;
-            foreach (var Words in MainList)
+            foreach (var Words in MainList) // nie sprawdzasz czy mainList nie jest pusta przed iteracja
             {
-                Console.WriteLine($"{x}. {Words.Word} - - - - - {Words.WordInYourLanguage} - - - - - Mistakes: {Words.Mistakes}");
+                Console.WriteLine($"{x}. {Words.Word} - - - - - {Words.WordInYourLanguage} - - - - - Mistakes: {Words.Mistakes}"); //PadLeft/Right
                 x++;
             }
 
@@ -283,20 +283,20 @@ namespace LanguageApp
             Console.Write("Number: ");
 
             bool correct = int.TryParse(Console.ReadLine(), out int result);
-            if (result == 0 && correct == true)
+            if (result == 0 && correct == true) // if(result ==0 && correct)
             {
-                return;
+                return;// to tez nie ma sensu. Odwroc warunek jak juz i w nim cos rob.
             }
             else if (correct == true)
             {
                 MainList.RemoveAt(result-1);
                 StreamWriter sr = new StreamWriter($@"{SystemOp}{language}{slash}{unit}{slash}{choose}.xml");
                 xml.Serialize(sr, MainList);
-                goto Backup1;
+                goto Backup1; //goto
 
             }
             else
-                goto Backup1;
+                goto Backup1; //goto
 
 
         }
