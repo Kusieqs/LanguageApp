@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 namespace LanguageApp
 {
 	public static class Review
 	{
-		public static void MainReveiw(string language, string SystemOp, string unit, string slash) //popraw nazwe drugiego parametru funkcji i literowke w nazwie.
+		public static void MainReview(string language, string systemOp, string unit, string slash) 
 		{
             
-            int Mistakes = 0; // zmienne z malej
+            int mistakes = 0; 
             ConsoleKeyInfo key;
-            int Max = 0, Min = 0;
-            bool Legendary = false;
+            int max = 0, min = 0;
+            bool legendary = false;
             bool correctAnswer = false;
             do
             {
@@ -26,41 +27,31 @@ namespace LanguageApp
 
                     ConsoleKeyInfo k1 = new ConsoleKeyInfo();
                     k1 = Console.ReadKey();
-                    if (k1.KeyChar == '1' || k1.KeyChar=='2' ||k1.KeyChar =='3' || k1.KeyChar =='4')
+                    if (k1.KeyChar == '1' || k1.KeyChar == '2' || k1.KeyChar == '3' || k1.KeyChar == '4')
                     {
-                        HowManyWords(ref Max, ref Min, k1, ref Legendary);
+                        HowManyWords(ref max, ref min, k1, ref legendary);
                         correctAnswer = true;
                     }
-                    else
-                    {
-                        continue; // to continue nic nie robi. Jezeli warunek nie zostanie spelniony to i tak zostanie to pominiete.
-                    }
                 }
-                else
-                    continue; //tu tak samo.
-            } while (correctAnswer == false); // mozna tez tak if (!correctAnswer)
+
+            } while (!correctAnswer);
 
 
-            SystemOp += language + slash;
+            systemOp += language + slash;
 
-            XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
-            StreamReader sr = new StreamReader($@"{SystemOp}{unit}{slash}{key.KeyChar}");
-            List<Word_Description> MainList = xml.Deserialize(sr) as List<Word_Description>;
+            List<WordDescription> mainList = JsonConvert.DeserializeObject<List<WordDescription>>($@"{systemOp}{unit}{slash}{key.KeyChar}");
 
-            if (MainList.Count != 0) 
+            if (mainList.Count > 0) 
             {
-                int CountingLines = MainList.Count;
-
-
                 Console.ReadKey();
 
-                if (Legendary == true)
+                if (legendary == true)
                 {
-                    LegendaryLvl(SystemOp, slash, key, unit, ref Mistakes, CountingLines,MainList);
+                    LegendaryLvl(ref mistakes, mainList);
                 }
                 else
                 {
-                    Levels(SystemOp, slash, key,unit, Min, Max, ref Mistakes,CountingLines,MainList);
+                    Levels(min, max, ref mistakes,mainList);
                 }
 
             }
@@ -73,92 +64,116 @@ namespace LanguageApp
             }
 
         }
-        private static void Levels(string SystemOp,string slash, ConsoleKeyInfo key, string unit, int Min, int Max, ref int Mistakes, int count, List<Word_Description> MainList) //trochę za dużo, im mniej funkcja przyjmuje parametrow tym latwiej ja obsluzyc bez bledow. Np. nie musisz console key podawac do funkcji tylko mozesz przyjmowac klawisz w jej srodku.
+        private static void Levels(int min, int max, ref int mistakes,List<WordDescription> mainList) 
         {
+            string attempt;
+            bool correctAnswer = false;
+            int count = mainList.Count;
             Random random = new Random();
-            int HowMany = random.Next(Min, Max + 1);
+            int howMany = random.Next(min, max + 1);
 
-            if (count > HowMany)
+            if (count > howMany)
             {
-                for (int i = 0; i < HowMany; i++)
+                for (int i = 0; i < howMany; i++)
                 {
-                    int RandomWord = random.Next(0, MainList.Count);
-                Backup1: //nie uzywaj goto.
-                    Console.Clear();
-                    Console.Write(MainList[RandomWord].WordInYourLanguage + " - - - - - ");//zamiast hardcodowania odstepow jest taka funkcja jak PadLeft/right. Ew w interpolacji mozna ustawiać odstępy.
-                    string Attempt = Console.ReadLine();
+                    int randomWord = random.Next(0, mainList.Count);
 
-                    if (MainList[RandomWord].Word.ToUpper() != Attempt.ToUpper()) //bezpieczniej by tu bylo uzywac linq albo slownikow z funkcja TryGetValue(), albo jak juz chcesz tak to najpierw sprawdzaj czy lista nie jest pusta i czy ma tyle indexow.
+                    do
                     {
-                        Mistakes++;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.Read();
-                        goto Backup1;
-                    }
+                        Console.Clear();
+                        Console.Write(mainList[randomWord].WordInYourLanguage + ": ".PadLeft(5));
+                        attempt = Console.ReadLine();
 
+                        if (mainList[randomWord].Word.ToUpper() != attempt.ToUpper()) 
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.Read();
+                            correctAnswer = true;
+                        }
+                    } while (!correctAnswer);
+                    correctAnswer = false;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Correct\nClick Enter to continue");
-                Backup2:// nie uzywaj goto
-                    Console.Clear();
-                    Console.Write(MainList[RandomWord].Word + " - - - - - "); //PadLeft/Righ 
-                    Attempt = Console.ReadLine();
+                    Console.ResetColor();
+                    Console.ReadKey();
 
-                    if (MainList[RandomWord].WordInYourLanguage.ToUpper() != Attempt.ToUpper()) 
+                    do
                     {
-                        Mistakes++;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.Read();
-                        goto Backup2;
-                    }
+                        Console.Clear();
+                        Console.Write(mainList[randomWord].Word + ": ".PadLeft(5));  
+                        attempt = Console.ReadLine();
+
+                        if (mainList[randomWord].WordInYourLanguage.ToUpper() != attempt.ToUpper())
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.Read();
+                            correctAnswer = true;
+                        }
+
+                    } while (!correctAnswer);
+
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"\nCorrect\nClick Enter to continue");
                     Console.Read();
                     Console.ResetColor();
                     Console.Clear();
-                    MainList.RemoveAt(RandomWord);
 
+                    mainList.RemoveAt(randomWord);
                 }
                 Console.Clear();
-                Console.WriteLine($"\nMistakes: {Mistakes}\nClick Enter to continue");
+                Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
                 Console.Read();
             }
             else
             {
-                for (int i = 0; i < HowMany; i++)
+                for (int i = 0; i < howMany; i++)
                 {
-                    int RandomWord = random.Next(0, MainList.Count);
-                Backup1: //goto
-                    Console.Clear();
-                    Console.Write(MainList[RandomWord].WordInYourLanguage + " - - - - - ");//PadLeft/Right
-                    string Attempt = Console.ReadLine();
-
-                    if (MainList[RandomWord].Word.ToUpper() != Attempt.ToUpper())
+                    int randomWord = random.Next(0, mainList.Count);
+                    do
                     {
-                        Mistakes++;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.Read();
-                        goto Backup1;// goto
-                    }
+                        Console.Clear();
+                        Console.Write(mainList[randomWord].WordInYourLanguage + ": ".PadLeft(5));
+                        attempt = Console.ReadLine();
+
+                        if (mainList[randomWord].Word.ToUpper() != attempt.ToUpper())
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.Read();
+                            correctAnswer = true;
+                        }
+                    } while (!correctAnswer);
+                    correctAnswer = false;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Correct\nClick Enter to continue");
-                Backup2:
-                    Console.Clear();
-                    Console.Write(MainList[RandomWord].Word + " - - - - - ");
-                    Attempt = Console.ReadLine();
+                    Console.ResetColor();
+                    Console.ReadKey();
 
-                    if (MainList[RandomWord].WordInYourLanguage.ToUpper() != Attempt.ToUpper())
+                    do
                     {
-                        Mistakes++;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.Read();
-                        goto Backup2;
-                    }
+                        Console.Clear();
+                        Console.Write(mainList[randomWord].Word + ": ".PadLeft(5));
+                        attempt = Console.ReadLine();
+
+                        if (mainList[randomWord].WordInYourLanguage.ToUpper() != attempt.ToUpper())
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.Read();
+                            correctAnswer = true;
+                        }
+                    } while (!correctAnswer);
+
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"\nCorrect\nClick Enter to continue");
                     Console.Read();
@@ -167,75 +182,90 @@ namespace LanguageApp
                 }
             }
             Console.Clear();
-            Console.WriteLine($"\nMistakes: {Mistakes}\nClick Enter to continue");
+            Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
             Console.Read();
 
         }
-        private static void LegendaryLvl(string SystemOp, string slash, ConsoleKeyInfo key, string unit, ref int Mistakes, int count, List<Word_Description> MainList) //za duzo parametrow. Zazwyczaj jesli funkcja przyjmuje ich wiecej niz 3 to znak ze trzeba sie zastanowic nad przerobieniem funkcji.
+        private static void LegendaryLvl(ref int Mistakes, List<WordDescription> mainList) 
         {
-            foreach (var Words in MainList)
+            string attempt;
+            int count = mainList.Count;
+            bool correctAnswer = false;
+            foreach (var words in mainList)
             {
-            Backup1: //goto
-                Console.Clear();
-                Console.Write(Words.WordInYourLanguage + " - - - - - ");//pad
-                string Attempt = Console.ReadLine();
-
-                if (Words.Word.ToUpper() != Attempt.ToUpper())
+                do
                 {
-                    Mistakes++;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                    Console.ResetColor();
-                    Console.Read();
-                    goto Backup1;//goto
-                }
+                    Console.Clear();
+                    Console.Write(words.WordInYourLanguage + ": ".PadLeft(5));
+                    attempt = Console.ReadLine();
+
+                    if (words.Word.ToUpper() != attempt.ToUpper())
+                    {
+                        Mistakes++;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                        Console.ResetColor();
+                        Console.Read();
+                        correctAnswer = true;
+                    }
+                } while (!correctAnswer);
+                correctAnswer = false;
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Correct\nClick Enter to continue");
-            Backup2:
-                Console.Clear();
-                Console.Write(Words.Word + " - - - - - ");//pad
-                Attempt = Console.ReadLine();
+                Console.ResetColor();
+                Console.ReadKey();
 
-                if (Words.WordInYourLanguage.ToUpper() != Attempt.ToUpper())
+                do
                 {
-                    Mistakes++;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                    Console.ResetColor();
-                    Console.Read();
-                    goto Backup2; //goto
-                }
+                    Console.Clear();
+                    Console.Write(words.Word + ": ".PadLeft(5));
+                    attempt = Console.ReadLine();
+
+                    if (words.WordInYourLanguage.ToUpper() != attempt.ToUpper())
+                    {
+                        Mistakes++;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                        Console.ResetColor();
+                        Console.Read();
+                        correctAnswer = true;
+                    }
+                } while (!correctAnswer);
+                Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"\nCorrect\nClick Enter to continue");
                 Console.Read();
                 Console.ResetColor();
                 Console.Clear();
+
             }
             Console.Clear();
             Console.WriteLine($"\nMistakes: {Mistakes}\nClick Enter to continue");
             Console.Read();
 
         }
-        private static void HowManyWords(ref int max, ref int min,ConsoleKeyInfo k1, ref bool Legendary)
+        private static void HowManyWords(ref int max, ref int min,ConsoleKeyInfo k1, ref bool legendary)
         {
-            if(k1.KeyChar == '1') //switch bedzie lepsza opcja
+
+            switch(k1.KeyChar)
             {
-                min = 10;
-                max = 10;
+                case '1':
+                    min = 10;
+                    max = 10;
+                    break;
+                case '2':
+                    min = 10;
+                    max = 30;
+                    break;
+                case '3':
+                    min = 30;
+                    max = 50;
+                    break;
+                case '4':
+                    legendary = true;
+                    break;
             }
-            else if(k1.KeyChar =='2')
-            {
-                min = 10;
-                max = 30;
-            }
-            else if (k1.KeyChar =='3')
-            {
-                min = 30;
-                max = 50;
-            }
-            else if (k1.KeyChar =='4')
-            {
-                Legendary = true;
-            }
+
         }
     }
 }
