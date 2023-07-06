@@ -11,25 +11,18 @@ namespace LanguageApp
             {
                 word = Console.ReadLine();
 
-                if(word.Length == 0)
-                    Console.WriteLine("Input can't be empty.");
-
             } while (word.Length == 0);
-            Console.Clear();
 
-            Console.Write($"Write a word in another language:    ");
+            Console.Write($"\n\nWrite a word in your language:    ");
             do
             {
                 wordInYourLanguage = Console.ReadLine();
 
-                if (wordInYourLanguage.Length == 0)
-                    Console.WriteLine("Input can't be empty.");
-
             } while (wordInYourLanguage.Length == 0);
 
 
-        }
-        public static string category(out CategoryName categoryName) // Choosing word category
+        }// Entering data of word
+        public static string category(out CategoryType categoryName) // Choosing word category
         {
             bool correctChoosing = false;
             do
@@ -43,13 +36,13 @@ namespace LanguageApp
                 switch (choose.Key.ToString().ToUpper())
                 {
                     case "W":
-                        categoryName = CategoryName.Word;
+                        categoryName = CategoryType.Word;
                         return "W";
                     case "E":
-                        categoryName = CategoryName.Expression;
+                        categoryName = CategoryType.Expression;
                         return "E";
                     case "D":
-                        categoryName = CategoryName.Diffrent;
+                        categoryName = CategoryType.Diffrent;
                         return "D";
                     default:
                         break;

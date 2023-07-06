@@ -16,7 +16,7 @@ internal class Program
         string systemOp, slash, unitName;
         string[] actualData = new string[2];
 
-        if (windowsOrMac) //Jest w c# taka klasa jak enviroment. Poczytaj o tym troche, to Ci pomoże łatwiej rozwiazać ten problem ścieżki. 
+        if (windowsOrMac) 
         {
             systemOp = $@"C:\Users\{userName}\Desktop\"; ///Windows
             slash = @"\";
@@ -28,18 +28,13 @@ internal class Program
         }
         #endregion
 
-        FirstTime(ref systemOp, slash, ref firstTimeBool, ref Languages, ListOfWords); /// testy
-
-
-
-
-
+        FirstTime(ref systemOp, slash, ref firstTimeBool, ref Languages, ListOfWords); 
 
         OverridingLanguages(systemOp, ref Languages);
 
-        WorkingClass.which_language(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
+        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
 
-        Language actualLAN = new Language(actualData[0], actualData[1]);
+        Language actualLanguage = new Language(actualData[0], actualData[1]);
 
         if (firstTimeBool)
         {
@@ -50,16 +45,17 @@ internal class Program
             for (int i = 0; i < 5; i++)
             {
                 Console.WriteLine("Words:\n\n");
-                WorkingClass.AddingWord(actualLAN, unitName, systemOp, slash, actualData[1]);
+                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
             }
         }
         firstTimeBool = false;
-        WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName, ListOfWords);
+
+        WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName);
 
         do
         {
             Console.Clear();
-            Console.WriteLine($"Choose on of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Close\n\n\nLanguage: {ActualData[0]}\nUnit: {UnitName}"); ///menu
+            Console.WriteLine($"Choose on of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Close\n\n\nLanguage: {actualData[0]}\nUnit: {unitName}"); ///menu
 
             ConsoleKeyInfo result = new ConsoleKeyInfo();
             result = Console.ReadKey();
@@ -68,7 +64,7 @@ internal class Program
             switch (result.KeyChar)
             {
                 case '1':
-                    WorkingClass.AddingWord(words, actualLAN, unitName, systemOp, slash, actualData[1]);
+                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
                     break;
 
                 case '2':
@@ -84,7 +80,7 @@ internal class Program
                     {
                         for (int i = 0; i < numberOfWords; i++)
                         {
-                            WorkingClass.AddingWord(words, actualLAN, unitName, systemOp, slash, actualData[1]);
+                            WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
                         }
                     }
                     break;
@@ -101,8 +97,8 @@ internal class Program
                     Console.Clear();
                     Languages.Clear();
                     OverridingLanguages(systemOp, ref Languages);
-                    WorkingClass.which_language(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
-                    WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName, ListOfWords);
+                    WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
+                    WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName);
                     break;
 
                 case '6':
@@ -129,7 +125,6 @@ internal class Program
             string jsonLanguages = JsonConvert.SerializeObject(languages);
             File.WriteAllText($@"{systemOp}Languages.json", jsonLanguages);
 
-            Console.ReadKey(); //test numer1
 
             Directory.CreateDirectory($"{systemOp}E");
             Directory.CreateDirectory($@"{systemOp}E{slash}Unit1");
@@ -142,17 +137,17 @@ internal class Program
 
 
             firstTimeBool = true;
-            Console.ReadKey(); //test numer2
         }
         else
         {
             systemOp += $@"LanguageApp{slash}";
         }
-    }
+    } // Creator directories and files (First time using app)
     public static void OverridingLanguages(string systemOp, ref List<Language> languages)
     {
         Console.Clear();
         languages.Clear();
-        languages = JsonConvert.DeserializeObject<List<Language>>($@"{systemOp}Languages.json");
-    }
+        string json = File.ReadAllText($@"{systemOp}Languages.json");
+        languages = JsonConvert.DeserializeObject<List<Language>>(json);
+    } // Adding main language
 }

@@ -38,8 +38,8 @@ namespace LanguageApp
 
 
             systemOp += language + slash;
-
-            List<WordDescription> mainList = JsonConvert.DeserializeObject<List<WordDescription>>($@"{systemOp}{unit}{slash}{key.KeyChar}");
+            string json = File.ReadAllText($@"{systemOp}{unit}{slash}{key.KeyChar}");
+            List<WordDescription> mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
 
             if (mainList.Count > 0) 
             {
@@ -63,7 +63,7 @@ namespace LanguageApp
                 Console.ResetColor();
             }
 
-        }
+        }// choosing which range of words and lvl
         private static void Levels(int min, int max, ref int mistakes,List<WordDescription> mainList) 
         {
             string attempt;
@@ -185,7 +185,7 @@ namespace LanguageApp
             Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
             Console.Read();
 
-        }
+        }// Learning random words from the list
         private static void LegendaryLvl(ref int Mistakes, List<WordDescription> mainList) 
         {
             string attempt;
@@ -243,7 +243,7 @@ namespace LanguageApp
             Console.WriteLine($"\nMistakes: {Mistakes}\nClick Enter to continue");
             Console.Read();
 
-        }
+        } // Learning all the words
         private static void HowManyWords(ref int max, ref int min,ConsoleKeyInfo k1, ref bool legendary)
         {
 
@@ -266,7 +266,7 @@ namespace LanguageApp
                     break;
             }
 
-        }
+        } // assinging a range of words
     }
 }
 
