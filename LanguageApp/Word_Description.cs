@@ -41,83 +41,26 @@ namespace LanguageApp
 			}
 		}
 	}
-	public class Word_Description // W nazwie klasy nie uzywamy podlogi. Powinno byc WordDescription.
-	{ 
-		private Language language; //prywatne pola oznaczamy w ten sposob: _language
-		private string word;
-		private string wordInYourLanguage; //_wordInYourLanguage i z innymi to samo.
-        private CategoryName category;
-		private int mistakes;
-		private string unit;
-		public Word_Description(string word, string wordInYourLanguage, CategoryName category,Language language,string unit)
+	public class WordDescription 
+	{
+		public Language Language { get; set; }
+		public string Word { get; set; }
+		public string WordInYourLanguage { get; set; }
+        public CategoryType Category { get; set; }
+		public int Mistakes { get; set; }
+		public string Unit { get; set; }
+		public WordDescription(string word, string wordInYourLanguage, CategoryType category,Language language,string unit)
 		{
-			this.word = word;
-			this.wordInYourLanguage = wordInYourLanguage;
-			this.category = category;
-			mistakes = 0;
-			this.language = language;
-			this.unit = unit;
+			this.Word = word;
+			this.WordInYourLanguage = wordInYourLanguage;
+			this.Category = category;
+			Mistakes = 0;
+			this.Language = language;
+			this.Unit = unit;
 
 		}
-		public Word_Description()
+		public WordDescription()
 		{ }
-		public string Word //Nie musisz uzywac rozbudowanych wlasciwosci jesli nie masz w nich zaimplementowanej logiki. Możesz zrobić tak: public string Word { get; set; }
-        {
-			get
-			{
-				return word;
-			}
-			set
-			{
-				word = value;
-			}
-		}
-
-        
-		public string WordInYourLanguage
-		{
-			get
-			{
-				return wordInYourLanguage;
-			}
-			set
-			{
-				wordInYourLanguage = value;
-			}
-		}
-		public CategoryName Category
-		{
-			get
-			{
-				return category;
-			}
-			set
-			{
-				category = value;
-			}
-		}
-		public int Mistakes
-		{
-			get
-			{
-				return mistakes;
-			}
-			set
-			{
-				mistakes = value;
-			}
-		}
-		public string Unit
-		{
-			get
-			{
-				return unit;
-			}
-			set
-			{
-				unit = value;
-			}
-		}
 
 	}
 }

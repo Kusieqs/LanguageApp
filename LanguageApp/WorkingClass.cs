@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 
 namespace LanguageApp
 {
     public static class WorkingClass
     {
-        public static void which_language(string SystemOP, ref List<Language> languages, bool firstTime, string slash, ref string[] ActualData) // za duzo zmiennych i zle nazewnictwo funkcji i niektorych zmiennych
+        public static void WhichLanguage(string systemOp, ref List<Language> languages, bool firstTime, string slash, ref string[] actualData)
         {
-            Array.Clear(ActualData);
-            string returnlan = "";// nie uzywaj skrotow, lepiej bedzie returnLanguage.
-            string returnchar = "";
+            Array.Clear(actualData);
+            string returnLanguage = null;
+            string returnChar = null;
             do
             {
                 Console.Clear();
-                Console.WriteLine("Choose one of the language (If you want to add a new language, choose 0)\n"); /// zmiana na odczytywanie z pliku tektowego
+                Console.WriteLine("Choose one of the language (If you want to add a new language, choose 0)\n"); 
                 foreach (var ChoosingLangWrite in languages)
                 {
                     Console.WriteLine($"{ChoosingLangWrite.CharLanguage} - {ChoosingLangWrite.Language1}");
@@ -25,29 +27,31 @@ namespace LanguageApp
 
                 if (result.KeyChar == '0')
                 {
-                    which_language_NewLanguage(returnchar, returnlan, ref languages, SystemOP);
-                    XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
-                    StreamWriter sr = new StreamWriter($"{SystemOP}Languages.xml");
-                    xml.Serialize(sr, languages);
+                    WhichLanguageNewLanguage(returnChar, returnLanguage, ref languages, systemOp);
+
+                    string json = JsonConvert.SerializeObject(languages);
+                    File.WriteAllText($"{systemOp}Languages.json", json);
+
+
                 }
                 else
                 {
                     foreach (var StringAndChar in languages)
                     {
-                        bool correctChar = char.TryParse(StringAndChar.CharLanguage, out char Letter); //Nigdzie nie uzywasz correctChar, więc nie musisz tryparse przypisywac do zmiennej.
+                        char.TryParse(StringAndChar.CharLanguage, out char Letter); 
                         if (Letter == result.KeyChar)
                         {
-                            ActualData[0] = StringAndChar.Language1;
-                            ActualData[1] = StringAndChar.CharLanguage;
+                            actualData[0] = StringAndChar.Language1;
+                            actualData[1] = StringAndChar.CharLanguage;
                         }
                     }
                 }
 
 
-            } while (string.IsNullOrEmpty(ActualData[1]) || string.IsNullOrEmpty(ActualData[0])); //mozesz sprawdzac cala tablice czy jest pusta zamiast poszczegolne elementy
+            } while (actualData[0] == null || actualData[1] == null); 
             Console.Clear();
-        }
-        private static void which_language_NewLanguage(string charlanguage, string namelanguage, ref List<Language> languages, string SystemOP)//zle nazewnictwo funkcji i niektorych zmiennych
+        }// Choosing language
+        private static void WhichLanguageNewLanguage(string charlanguage, string namelanguage, ref List<Language> languages, string systemOp)
         {
             bool end = false;
             do
@@ -55,13 +59,17 @@ namespace LanguageApp
                 Console.Clear();
                 Console.Write("Choose 0 to exit or write language: ");
                 namelanguage = Console.ReadLine().ToLower();
+
+                if (namelanguage == "")
+                    continue;
+
                 namelanguage = char.ToUpper(namelanguage[0]) + namelanguage.Substring(1);
 
                 if (namelanguage == "0")
                     break;
 
-                bool correctenum = Enum.TryParse(namelanguage, out LanguageName NameLanguage); //correctEnum
-                if (correctenum == false)
+                bool correctEnum = Enum.TryParse(namelanguage, out LanguageName nameLanguage); 
+                if (correctEnum == false)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\nWrong language in our data\nCLICK ENTER TO CONTINUE");
@@ -75,7 +83,7 @@ namespace LanguageApp
                 if (charlanguage == "0")
                     break;
 
-                bool correctindex = Enum.TryParse(charlanguage, out CharLanguage Namechar); //zla nazwa zmiennej
+                bool correctindex = Enum.TryParse(charlanguage, out CharLanguage nameChar); 
                 if (correctindex == false)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -96,108 +104,95 @@ namespace LanguageApp
                         Console.WriteLine("\n\nThis language or index are already exist\nCLICK ENTER TO CONTINUE");
                         Console.ReadKey();
                         Console.ResetColor();
-                        continue;// to continue nic nie robi bo iteracja petli i tak sie tu konczy.
                     }
                 }
 
-                if (!Directory.Exists($@"{SystemOP}{Namechar}"))
+                if (!Directory.Exists($@"{systemOp}{nameChar}"))
                 {
-                    Directory.CreateDirectory($@"{SystemOP}{Namechar}");
+                    Directory.CreateDirectory($@"{systemOp}{nameChar}");
                 }
 
-                Language k1 = new Language(NameLanguage, Namechar);
+                Language k1 = new Language(nameLanguage, nameChar);
                 languages.Add(k1);
                 end = true;
             } while (end == false);
 
-        }
-        public static void ChoosingUnit(string SystemOp, string language, string Slash, out string UnitName,List<Word_Description> MainList) //za duzo zmiennych i zle nazwy
+        }// Adding new language to list
+        public static void ChoosingUnit(string systemOp, string language, string slash, out string unitName)
         {
-            UnitName = string.Empty; // z malej ma byc
-            bool Unit = false;
+            unitName = string.Empty; 
+            bool unitBool = false;
             do
             {
-                List<string> FoldersNames = new List<string>();
+                List<string> foldersNames = new List<string>();
                 Console.Clear();
                 Console.WriteLine("If you want to create new Unit write number 0 or choose one of this: \n\n\nUnits:\n\n");
-                string[] Folders = Directory.GetDirectories($"{SystemOp}{language[0]}");
+                string[] Folders = Directory.GetDirectories($"{systemOp}{language[0]}");
                 foreach (var direct in Folders)
                 {
-                    FoldersNames.Add(Path.GetFileName($"{direct}"));
+                    foldersNames.Add(Path.GetFileName($"{direct}"));
                 }
-                for (int i = 0; i < FoldersNames.Count; i++)
+                for (int i = 0; i < foldersNames.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1}. {FoldersNames[i]}");
+                    Console.WriteLine($"{i + 1}. {foldersNames[i]}");
                 }
 
 
-                bool UnitChoosing = int.TryParse(Console.ReadLine(), out int CorrectUnit);
-                if (UnitChoosing == false)
+                bool unitChoosing = int.TryParse(Console.ReadLine(), out int correctUnit);
+                if (unitChoosing == false)
                     continue;
-                else if (CorrectUnit > FoldersNames.Count)
+                else if (correctUnit > foldersNames.Count)
                     continue;
 
-                if (CorrectUnit == 0)
+                if (correctUnit == 0)
                 {
                     Console.Clear();
                     Console.Write("Write a new name of Unit: ");
                     string NewUnit = Console.ReadLine();
-                    if (!Directory.Exists($"{SystemOp}{language[0]}{Slash}{NewUnit}"))
+                    if (!Directory.Exists($"{systemOp}{language[0]}{slash}{NewUnit}"))
                     {
-                        XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
-                        Directory.CreateDirectory($"{SystemOp}{language[0]}{Slash}{NewUnit}");
-                        StreamWriter wr = new StreamWriter($@"{SystemOp}{language[0]}{Slash}{NewUnit}{Slash}W");
-                        StreamWriter wr2 = new StreamWriter($@"{SystemOp}{language[0]}{Slash}{NewUnit}{Slash}E");
-                        StreamWriter wr3 = new StreamWriter($@"{SystemOp}{language[0]}{Slash}{NewUnit}{Slash}D");
-
-                        xml.Serialize(wr, MainList);
-                        xml.Serialize(wr2, MainList);
-                        xml.Serialize(wr3, MainList);
-                        wr.Close();
-                        wr2.Close();
-                        wr3.Close();
-                        continue; //to continue nic nie robi bo jest koniec warunku.
+                        Directory.CreateDirectory($"{systemOp}{language[0]}{slash}{NewUnit}");
+                        string test = null;
+                        string jsonFile = JsonConvert.SerializeObject(test);
+                        File.WriteAllText($@"{systemOp}{language[0]}{slash}{NewUnit}{slash}W.json", test);
+                        File.WriteAllText($@"{systemOp}{language[0]}{slash}{NewUnit}{slash}E.json", test);
+                        File.WriteAllText($@"{systemOp}{language[0]}{slash}{NewUnit}{slash}D.json", test);
                     }
                     else if (NewUnit == "0")
                     {
-                        Console.WriteLine("\n\nYoo can't write 0 as a name\nClick Enter to continue");
+                        Console.WriteLine("\n\nYou can't write 0 as a name\nClick Enter to continue");
                         Console.ReadKey();
-                        continue; //to tez
                     }
                     else
                     {
                         Console.WriteLine("\n\nDirectory is existing\nClick Enter to continue");
                         Console.ReadKey();
-                        continue; //i to tez
                     }
                 }
                 else
                 {
-                    UnitName = FoldersNames[CorrectUnit - 1];
-                    Unit = true;
+                    unitName = foldersNames[correctUnit - 1];
+                    unitBool = true;
                     Console.Clear();
                 }
 
-            } while (Unit == false);
+            } while (unitBool == false);
 
-        }
-        public static void AddingWord(Word_Description w1, Language language, string unit, string SystemOp, string slash, string LanChar) //za duzo zmiennych i zle nazwy.
+        }// choosing unit
+        public static void AddingWord(Language language, string unit, string systemOp, string slash, string lanChar) 
         {
             string word, wordInYourLanguage, category;
-            CategoryName categoryName;
+            CategoryType categoryName;
             Console.Clear();
-            bool correct;
+            bool correct = false;
+
+            AddingWordMethods.WordWriting(out word, out wordInYourLanguage);
+            category = AddingWordMethods.category(out categoryName);
             do
             {
                 Console.Clear();
-                correct = false;
-
-                word = AddingWordMethods.word_writing();
-                wordInYourLanguage = AddingWordMethods.word_in_your_language();
-                category = AddingWordMethods.category(out categoryName);
 
 
-            backup:
                 Console.Clear();
                 Console.WriteLine($"\nInformation:\n\n{word} - {wordInYourLanguage}\n\nCategory: {categoryName}\nUnit: {unit}"); ///Information About Word/Expresion
                 Console.Write("\n\nDo you accept a new word? Y/N");
@@ -205,100 +200,115 @@ namespace LanguageApp
 
                 ConsoleKeyInfo answer = new ConsoleKeyInfo();
                 answer = Console.ReadKey();
-                if (answer.KeyChar == 'Y' || answer.KeyChar == 'y') //ToLower i porownujesz tylko z mala albo na odwrot. nie musisz wtedy obu przypadkow sprawdzac
+
+                if (answer.KeyChar.ToString().ToUpper() == "Y")
                 {
                     correct = true;
                 }
-                else if (answer.KeyChar == 'N' || answer.KeyChar == 'n')
+                else if (answer.KeyChar.ToString().ToUpper() == "N")
                 {
                     return;
                 }
-                else
-                    goto backup; //Nie uzywaj goto
+
+
+                Console.Clear();
+
+                WordDescription w1 = new WordDescription(word, wordInYourLanguage, categoryName, language, unit);
+                List<WordDescription> mainList = new List<WordDescription>();
+
+                string json = File.ReadAllText(@$"{systemOp}{slash}{lanChar}{slash}{unit}{slash}{category}.json");
+                if (!string.IsNullOrEmpty(json))
+                {
+                    mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
+                }
+
+                mainList.Add(w1);
+
+                string jsonFile = JsonConvert.SerializeObject(mainList);
+                File.WriteAllText(@$"{systemOp}{slash}{lanChar}{slash}{unit}{slash}{category}.json", jsonFile);
+
 
             } while (correct == false);
-            Console.Clear();
-
-            List<Word_Description> MainList = new List<Word_Description>();
-            XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
-            StreamReader sr = new StreamReader($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}.xml");
-            StreamWriter sw = new StreamWriter($@"{SystemOp}{slash}{LanChar}{slash}{unit}{slash}{category}.xml"); //ulatwisz sobie znacznie zycie jak przerzucisz sie na jsona.
-
-            w1 = new Word_Description(word, wordInYourLanguage, categoryName, language, unit);
-            try
-            {
-                MainList = xml.Deserialize(sr) as List<Word_Description>;
-                MainList.Add(w1);
-                xml.Serialize(sw, MainList); //// PROBLEM!
-            }
-            catch // przechwytujesz blad ale nic z nim nie robisz co moze prowadzic do ukrywania bledow i nie bedziesz wiedzial czemu Ci cos nie dziala.
-            { }
-            finally
-            {
-                MainList.Add(w1);
-                xml.Serialize(sw, MainList);
-            }
-
-        }
-        public static void CheckList(string language, string SystemOp, string unit, string slash)// zle nazwy zmiennych
+        } // Adding new word 
+        public static void CheckList(string language, string systemOp, string unit, string slash)
         {
+            bool correctAnswer = false;
+            string choose = null;
             Console.Clear();
             Console.WriteLine("Do you want to see words,expresions,diffrent? W/E/D");
-        Backup:
-            string choose;
-            ConsoleKeyInfo key1 = new ConsoleKeyInfo();
-            key1 = Console.ReadKey();
-            if (key1.KeyChar == 'W' || key1.KeyChar == 'w') //proponowalbym switcha
+            do
             {
-                choose = "W";
-            }
-            else if (key1.KeyChar == 'E' || key1.KeyChar == 'e')
+                ConsoleKeyInfo key1 = new ConsoleKeyInfo();
+                key1 = Console.ReadKey();
+                switch (key1.KeyChar.ToString().ToUpper())
+                {
+                    case "W":
+                        choose = "W";
+                        correctAnswer = true;
+                        break;
+                    case "E":
+                        choose = "E";
+                        correctAnswer = true;
+                        break;
+                    case "D":
+                        choose = "D";
+                        correctAnswer = true;
+                        break;
+
+                }
+            } while (!correctAnswer);
+
+            bool correctWordsList = false;
+            do
             {
-                choose = "E";
-            }
-            else if(key1.KeyChar=='d'|| key1.KeyChar =='D')
-            {
-                choose = "D";
-            }
-            else
-                goto Backup;//goto
+                int count = 0;
+                Console.Clear();
 
+                List<WordDescription> mainList = new List<WordDescription>();
+                string json = File.ReadAllText($@"{systemOp}{language}{slash}{unit}{slash}{choose}.json");
 
-        Backup1: //goto
-            int count = 0;
-            Console.Clear();
-            StreamReader rd = new StreamReader($@"{SystemOp}{language}{slash}{unit}{slash}{choose}.xml");
-            XmlSerializer xml = new XmlSerializer(typeof(List<Word_Description>));
-            List<Word_Description> MainList = xml.Deserialize(rd) as List<Word_Description>;
-            int x = 1;
-            foreach (var Words in MainList) // nie sprawdzasz czy mainList nie jest pusta przed iteracja
-            {
-                Console.WriteLine($"{x}. {Words.Word} - - - - - {Words.WordInYourLanguage} - - - - - Mistakes: {Words.Mistakes}"); //PadLeft/Right
-                x++;
-            }
+                if(!string.IsNullOrEmpty(json))
+                    mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
 
+                int x = 1;
+                if (mainList.Count > 0)
+                {
+                    Console.WriteLine("Nr  \t Mistakes\t\tword\t\t\tWord\n");
+                    foreach (var word in mainList)
+                    {
+                        Console.SetCursorPosition(0, x * 2);
+                        Console.Write($"{x}.");
+                        Console.SetCursorPosition(9, x*2);
+                        Console.Write(word.Mistakes);
+                        Console.SetCursorPosition(32, x * 2);
+                        Console.Write(word.Word);
+                        Console.SetCursorPosition(56, x * 2);
+                        Console.Write(word.WordInYourLanguage);
+                        ++x;
+                    }
+                    Console.WriteLine("\n\n\n\nIf you want to remove any line, write a number of line (write 0 to exit)");
+                    Console.Write("Number: ");
+                    bool correct = int.TryParse(Console.ReadLine(), out int result);
 
-            rd.Close();
-            Console.WriteLine("\n\nIf you want to remove any line, write a number of line (write 0 to exit)");
-            Console.Write("Number: ");
+                    if (result == 0)
+                    {
+                        correctWordsList = true;
+                    }
+                    else if (correct == true && result > 0)
+                    {
+                        mainList.RemoveAt(result - 1);
+                        string jsonFile = JsonConvert.SerializeObject(mainList);
+                        File.WriteAllText($@"{systemOp}{language}{slash}{unit}{slash}{choose}.json", jsonFile);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("List is empty\nClick enter to continue");
+                    Console.ReadKey();
+                    break;
+                }
 
-            bool correct = int.TryParse(Console.ReadLine(), out int result);
-            if (result == 0 && correct == true) // if(result ==0 && correct)
-            {
-                return;// to tez nie ma sensu. Odwroc warunek jak juz i w nim cos rob.
-            }
-            else if (correct == true)
-            {
-                MainList.RemoveAt(result-1);
-                StreamWriter sr = new StreamWriter($@"{SystemOp}{language}{slash}{unit}{slash}{choose}.xml");
-                xml.Serialize(sr, MainList);
-                goto Backup1; //goto
-
-            }
-            else
-                goto Backup1; //goto
-
-
-        }
+            } while (!correctWordsList);
+        }// List of all words
     }
 }

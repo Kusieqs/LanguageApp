@@ -1,157 +1,153 @@
 ﻿using System.Xml.Serialization;
+using Newtonsoft.Json;
 namespace LanguageApp;
 internal class Program
 {
 
     private static void Main(string[] args)
     {
-        List<Word_Description> ListOfWords = new List<Word_Description>();//zła nazwa klasy
+        List<WordDescription> ListOfWords = new List<WordDescription>();
         List<Language> Languages = new List<Language>();
 
-        //regiony sa spoko, możesz ich używać gdy masz dużo kodu i jesteś w stanie go sensownie i logicznie podzielic.
         #region Data Reading
-        bool FirstTimeBool = false, end = true;
-        string UserName = System.Environment.UserName;
-        bool WindowsOrMac = System.Environment.OSVersion.Platform == PlatformID.Win32NT;
-        string SystemOp, Slash;
-        string UnitName;
-        string[] ActualData = new string[2];
-        if (WindowsOrMac == true) //Jest w c# taka klasa jak enviroment. Poczytaj o tym troche, to Ci pomoże łatwiej rozwiazać ten problem ścieżki. 
+        bool firstTimeBool = false, end = true;
+        string userName = System.Environment.UserName;
+        bool windowsOrMac = System.Environment.OSVersion.Platform == PlatformID.Win32NT;
+        string systemOp, slash, unitName;
+        string[] actualData = new string[2];
+
+        if (windowsOrMac) 
         {
-            SystemOp = $@"C:\Users\{UserName}\Desktop\"; ///Windows
-            Slash = @"\";
+            systemOp = $@"C:\Users\{userName}\Desktop\"; ///Windows
+            slash = @"\";
         }
         else
         {
-            SystemOp = $@"/Users/{UserName}/Desktop/"; ///MacIOS
-            Slash = @"/";
+            systemOp = $@"/Users/{userName}/Desktop/"; ///MacIOS
+            slash = @"/";
         }
         #endregion
 
-        FirstTime(ref SystemOp, Slash, ref FirstTimeBool,ref Languages, ListOfWords);
-        OverridingLanguages(SystemOp, ref Languages);
+        FirstTime(ref systemOp, slash, ref firstTimeBool, ref Languages, ListOfWords); 
 
-        WorkingClass.which_language(SystemOp, ref Languages, FirstTimeBool, Slash, ref ActualData);
+        OverridingLanguages(systemOp, ref Languages);
 
-        Language ActualLAN = new Language(ActualData[0], ActualData[1]);
-        Word_Description Words = null;
+        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
 
-        if(FirstTimeBool == true) // if(FirstTimeBool) to bedzie to samo co (FirstTimeBool == true), a ta pierwsza opcja jest krotsza.
+        Language actualLanguage = new Language(actualData[0], actualData[1]);
+
+        if (firstTimeBool)
         {
             Console.Clear();
             Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future!");
             Thread.Sleep(1600);
-            UnitName = "Unit1";
+            unitName = "Unit1";
             for (int i = 0; i < 5; i++)
             {
                 Console.WriteLine("Words:\n\n");
-                WorkingClass.AddingWord(Words, ActualLAN, UnitName, SystemOp, Slash, ActualData[1]);
+                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
             }
-        }  
-        FirstTimeBool = false;
-        WorkingClass.ChoosingUnit(SystemOp, ActualData[0], Slash,out UnitName, ListOfWords);
+        }
+        firstTimeBool = false;
+
+        WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName);
 
         do
         {
-        menu: // nie uzywaj goto
             Console.Clear();
-            Console.WriteLine($"Choose on of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Close\n\n\nLanguage: {ActualData[0]}\nUnit: {UnitName}"); ///menu
+            Console.WriteLine($"Choose on of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Close\n\n\nLanguage: {actualData[0]}\nUnit: {unitName}"); ///menu
 
             ConsoleKeyInfo result = new ConsoleKeyInfo();
             result = Console.ReadKey();
 
-            if (result.KeyChar == '1') //lepiej tu uzyc switcha.
+
+            switch (result.KeyChar)
             {
-                WorkingClass.AddingWord(Words, ActualLAN, UnitName, SystemOp, Slash, ActualData[1]);
-            }
-            else if(result.KeyChar == '2')
-            {
-                Console.Clear();
-                Console.WriteLine("Write number of words which do you want to add. (Max 20 words)");
-                Console.Write("\nNumber: ");
-                int numberOfWords = int.Parse(Console.ReadLine());
-                if(numberOfWords == 0 || numberOfWords < 0 || numberOfWords >20)
-                {
-                    continue; //to continue obenie nic nie robi.
-                }
-                else 
-                {
-                    for (int i = 0; i < numberOfWords; i++)
+                case '1':
+                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
+                    break;
+
+                case '2':
+                    Console.Clear();
+                    Console.WriteLine("Write number of words which do you want to add. (Max 20 words)");
+                    Console.Write("\nNumber: ");
+                    int numberOfWords = int.Parse(Console.ReadLine());
+                    if (numberOfWords == 0 || numberOfWords < 0 || numberOfWords > 20)
                     {
-                        WorkingClass.AddingWord(Words, ActualLAN, UnitName, SystemOp, Slash, ActualData[1]);
+                        break;
                     }
-                }    
-                
-            }
-            else if (result.KeyChar == '3')
-            {
-                Review.MainReveiw(ActualData[1], SystemOp, UnitName, Slash);
-            }
-            else if (result.KeyChar == '4')
-            {
-                WorkingClass.CheckList(ActualData[1], SystemOp, UnitName, Slash);
-            }
-            else if (result.KeyChar == '5')
-            {
-                Console.Clear();
-                Languages.Clear();
-                OverridingLanguages(SystemOp, ref Languages);
-                WorkingClass.which_language(SystemOp,ref Languages, FirstTimeBool,Slash,ref ActualData);
-                WorkingClass.ChoosingUnit(SystemOp,ActualData[0], Slash, out UnitName, ListOfWords);
+                    else
+                    {
+                        for (int i = 0; i < numberOfWords; i++)
+                        {
+                            WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
+                        }
+                    }
+                    break;
+
+                case '3':
+                    Review.MainReview(actualData[1], systemOp, unitName, slash);
+                    break;
+
+                case '4':
+                    WorkingClass.CheckList(actualData[1], systemOp, unitName, slash);
+                    break;
+
+                case '5':
+                    Console.Clear();
+                    Languages.Clear();
+                    OverridingLanguages(systemOp, ref Languages);
+                    WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
+                    WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName);
+                    break;
+
+                case '6':
+                    end = false;
+                    break;
+
 
             }
-            else if (result.KeyChar == '6')
-                end = false;
-            else
-                goto menu;
-
-        } while (end != false); // while(end)
+        } while (end); 
 
     }
-    public static void FirstTime(ref string SystemOp, string Slash,ref bool FirstTimeBool,ref List<Language> languages, List<Word_Description> xmlList) // nazwy zmiennych z małej a jak slowo > 1 to camelCase. 
+    public static void FirstTime(ref string systemOp, string slash, ref bool firstTimeBool, ref List<Language> languages, List<WordDescription> xmlList)
     {
-        if (!Directory.Exists($"{SystemOp}LanguageApp")) //proponowalbym seriazlizowac dane do jsona. Xml jest przestarzaly i mało czytelny. Pomyśl nad zmianą tego i ogarnij sobie biblioteke newtonsoft.json
+        if (!Directory.Exists($"{systemOp}LanguageApp"))
         {
-            XmlSerializer xmlMainWord = new XmlSerializer(typeof(List<Word_Description>));
-            XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
 
-            Directory.CreateDirectory($"{SystemOp}LanguageApp");
-            SystemOp += @$"LanguageApp{Slash}";
 
-            Language l1 = new Language(LanguageName.English,CharLanguage.E);
+            Directory.CreateDirectory($"{systemOp}LanguageApp");
+            systemOp += @$"LanguageApp{slash}";
+
+            Language l1 = new Language(LanguageName.English, CharLanguage.E);
             languages.Add(l1);
-            StreamWriter strw = new StreamWriter(@$"{SystemOp}Languages.xml");
-            xml.Serialize(strw, languages);
-            strw.Dispose();
+
+            string jsonLanguages = JsonConvert.SerializeObject(languages);
+            File.WriteAllText($@"{systemOp}Languages.json", jsonLanguages);
 
 
-            Directory.CreateDirectory($"{SystemOp}E");
-            Directory.CreateDirectory($@"{SystemOp}E{Slash}Unit1");
-            StreamWriter Write = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}W.xml");
-            StreamWriter Write1 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}E.xml");
-            StreamWriter Write2 = new StreamWriter($@"{SystemOp}E{Slash}Unit1{Slash}D.xml");
+            Directory.CreateDirectory($"{systemOp}E");
+            Directory.CreateDirectory($@"{systemOp}E{slash}Unit1");
 
-            xmlMainWord.Serialize(Write, xmlList);
-            xmlMainWord.Serialize(Write1, xmlList);
-            xmlMainWord.Serialize(Write2, xmlList);
+            string test = null;
+            string jsonFile = JsonConvert.SerializeObject(test);
+            File.WriteAllText($@"{systemOp}E{slash}Unit1{slash}W.json", test);
+            File.WriteAllText($@"{systemOp}E{slash}Unit1{slash}E.json", test);
+            File.WriteAllText($@"{systemOp}E{slash}Unit1{slash}D.json", test);
 
-            Write.Close();
-            Write1.Close();
-            Write2.Close();
 
-            FirstTimeBool = true; //Nie powinno to tak być ale jak zmienisz na jsona to najprawdopodobniej ogarniesz latwiejszy sposob.
+            firstTimeBool = true;
         }
         else
         {
-            SystemOp += $@"LanguageApp{Slash}";
+            systemOp += $@"LanguageApp{slash}";
         }
-    }
-    public static void OverridingLanguages(string SystemOp, ref List<Language> languages) //https://web.archive.org/web/20170314184846/http://msdn.microsoft.com/en-us/library/0f66670z(VS.71).aspx
+    } // Creator directories and files (First time using app)
+    public static void OverridingLanguages(string systemOp, ref List<Language> languages)
     {
+        Console.Clear();
         languages.Clear();
-        XmlSerializer xml = new XmlSerializer(typeof(List<Language>));
-        StreamReader sr = new StreamReader($@"{SystemOp}Languages.xml");
-        languages = xml.Deserialize(sr) as List<Language>;
-        sr.Dispose();
-    }
+        string json = File.ReadAllText($@"{systemOp}Languages.json");
+        languages = JsonConvert.DeserializeObject<List<Language>>(json);
+    } // Adding main language
 }
