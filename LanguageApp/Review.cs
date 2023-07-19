@@ -5,7 +5,7 @@ namespace LanguageApp
 {
 	public static class Review
 	{
-		public static void MainReview(string language, string systemOp, string unit, string slash) 
+		public static void MainReview(string language, string systemOp, string unit) 
 		{
             
             int mistakes = 0; 
@@ -37,8 +37,7 @@ namespace LanguageApp
             } while (!correctAnswer);
 
 
-            systemOp += language + slash;
-            string json = File.ReadAllText($@"{systemOp}{unit}{slash}{key.KeyChar}");
+            string json = File.ReadAllText(Path.Combine(systemOp, language, unit, key.KeyChar.ToString()));
             List<WordDescription> mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
 
             if (mainList.Count > 0) 

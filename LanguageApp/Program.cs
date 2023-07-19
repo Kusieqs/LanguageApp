@@ -11,28 +11,19 @@ internal class Program
 
         #region Data Reading
         bool firstTimeBool = false, end = true;
-        string userName = System.Environment.UserName;
-        bool windowsOrMac = System.Environment.OSVersion.Platform == PlatformID.Win32NT;
-        string systemOp, slash, unitName;
-        string[] actualData = new string[2];
 
-        if (windowsOrMac) 
-        {
-            systemOp = $@"C:\Users\{userName}\Desktop\"; ///Windows
-            slash = @"\";
-        }
-        else
-        {
-            systemOp = $@"/Users/{userName}/Desktop/"; ///MacIOS
-            slash = @"/";
-        }
+        string systemData = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string systemOp = Path.Combine(systemData, "Desktop");
+
+        string unitName;
+        string[] actualData = new string[2];
         #endregion
 
-        FirstTime(ref systemOp, slash, ref firstTimeBool, ref Languages, ListOfWords); 
+        FirstTime(ref systemOp, ref firstTimeBool, ref Languages, ListOfWords); 
 
         OverridingLanguages(systemOp, ref Languages);
 
-        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
+        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
 
         Language actualLanguage = new Language(actualData[0], actualData[1]);
 
@@ -45,12 +36,12 @@ internal class Program
             for (int i = 0; i < 5; i++)
             {
                 Console.WriteLine("Words:\n\n");
-                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
+                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
             }
         }
         firstTimeBool = false;
 
-        WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName);
+        WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName);
 
         do
         {
@@ -64,7 +55,7 @@ internal class Program
             switch (result.KeyChar)
             {
                 case '1':
-                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
+                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
                     break;
 
                 case '2':
@@ -80,25 +71,25 @@ internal class Program
                     {
                         for (int i = 0; i < numberOfWords; i++)
                         {
-                            WorkingClass.AddingWord(actualLanguage, unitName, systemOp, slash, actualData[1]);
+                            WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
                         }
                     }
                     break;
 
                 case '3':
-                    Review.MainReview(actualData[1], systemOp, unitName, slash);
+                    Review.MainReview(actualData[1], systemOp, unitName);
                     break;
 
                 case '4':
-                    WorkingClass.CheckList(actualData[1], systemOp, unitName, slash);
+                    WorkingClass.CheckList(actualData[1], systemOp, unitName);
                     break;
 
                 case '5':
                     Console.Clear();
                     Languages.Clear();
                     OverridingLanguages(systemOp, ref Languages);
-                    WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, slash, ref actualData);
-                    WorkingClass.ChoosingUnit(systemOp, actualData[0], slash, out unitName);
+                    WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool,ref actualData);
+                    WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName);
                     break;
 
                 case '6':
@@ -110,44 +101,43 @@ internal class Program
         } while (end); 
 
     }
-    public static void FirstTime(ref string systemOp, string slash, ref bool firstTimeBool, ref List<Language> languages, List<WordDescription> xmlList)
+    public static void FirstTime(ref string systemOp, ref bool firstTimeBool, ref List<Language> languages, List<WordDescription> xmlList)
     {
         if (!Directory.Exists($"{systemOp}LanguageApp"))
         {
 
 
             Directory.CreateDirectory($"{systemOp}LanguageApp");
-            systemOp += @$"LanguageApp{slash}";
+            systemOp = Path.Combine(systemOp, "LanguageApp");
 
             Language l1 = new Language(LanguageName.English, CharLanguage.E);
             languages.Add(l1);
 
             string jsonLanguages = JsonConvert.SerializeObject(languages);
-            File.WriteAllText($@"{systemOp}Languages.json", jsonLanguages);
+            File.WriteAllText(Path.Combine(systemOp, "Languages.json"), jsonLanguages);
 
-
-            Directory.CreateDirectory($"{systemOp}E");
-            Directory.CreateDirectory($@"{systemOp}E{slash}Unit1");
+            Directory.CreateDirectory(Path.Combine(systemOp, "E"));
+            Directory.CreateDirectory(Path.Combine(systemOp, "E", "Unit1"));
 
             string test = null;
             string jsonFile = JsonConvert.SerializeObject(test);
-            File.WriteAllText($@"{systemOp}E{slash}Unit1{slash}W.json", test);
-            File.WriteAllText($@"{systemOp}E{slash}Unit1{slash}E.json", test);
-            File.WriteAllText($@"{systemOp}E{slash}Unit1{slash}D.json", test);
 
+            File.WriteAllText(Path.Combine(systemOp, "E", "Unit1", "W.json"), test);
+            File.WriteAllText(Path.Combine(systemOp, "E", "Unit1", "E.json"), test);
+            File.WriteAllText(Path.Combine(systemOp, "E", "Unit1", "D.json"), test);
 
             firstTimeBool = true;
         }
         else
         {
-            systemOp += $@"LanguageApp{slash}";
+            systemOp = Path.Combine(systemOp, "LanguageApp");
         }
     } // Creator directories and files (First time using app)
     public static void OverridingLanguages(string systemOp, ref List<Language> languages)
     {
         Console.Clear();
         languages.Clear();
-        string json = File.ReadAllText($@"{systemOp}Languages.json");
+        string json = File.ReadAllText(Path.Combine(systemOp, "Languages.json"));
         languages = JsonConvert.DeserializeObject<List<Language>>(json);
     } // Adding main language
 }
