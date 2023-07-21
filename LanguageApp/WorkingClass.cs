@@ -8,7 +8,7 @@ namespace LanguageApp
 {
     public static class WorkingClass
     {
-        public static void WhichLanguage(string systemOp, ref List<Language> languages, bool firstTime, string slash, ref string[] actualData)
+        public static void WhichLanguage(string systemOp, ref List<Language> languages, bool firstTime, ref string[] actualData)
         {
             Array.Clear(actualData);
             string returnLanguage = null;
@@ -30,9 +30,7 @@ namespace LanguageApp
                     WhichLanguageNewLanguage(returnChar, returnLanguage, ref languages, systemOp);
 
                     string json = JsonConvert.SerializeObject(languages);
-                    File.WriteAllText($"{systemOp}Languages.json", json);
-
-
+                    File.WriteAllText(Path.Combine(systemOp, "Languages.json"), json);
                 }
                 else
                 {
@@ -107,9 +105,11 @@ namespace LanguageApp
                     }
                 }
 
-                if (!Directory.Exists($@"{systemOp}{nameChar}"))
+                string copyNameChar = nameChar.ToString();
+
+                if(!Directory.Exists(Path.Combine(systemOp,copyNameChar)))
                 {
-                    Directory.CreateDirectory($@"{systemOp}{nameChar}");
+                    Directory.CreateDirectory(Path.Combine(systemOp, copyNameChar));
                 }
 
                 Language k1 = new Language(nameLanguage, nameChar);
@@ -118,7 +118,7 @@ namespace LanguageApp
             } while (end == false);
 
         }// Adding new language to list
-        public static void ChoosingUnit(string systemOp, string language, string slash, out string unitName)
+        public static void ChoosingUnit(string systemOp, string language, out string unitName)
         {
             unitName = string.Empty; 
             bool unitBool = false;
@@ -127,7 +127,7 @@ namespace LanguageApp
                 List<string> foldersNames = new List<string>();
                 Console.Clear();
                 Console.WriteLine("If you want to create new Unit write number 0 or choose one of this: \n\n\nUnits:\n\n");
-                string[] Folders = Directory.GetDirectories($"{systemOp}{language[0]}");
+                string[] Folders = Directory.GetDirectories(Path.Combine(systemOp, language[0].ToString()));
                 foreach (var direct in Folders)
                 {
                     foldersNames.Add(Path.GetFileName($"{direct}"));
@@ -148,17 +148,20 @@ namespace LanguageApp
                 {
                     Console.Clear();
                     Console.Write("Write a new name of Unit: ");
-                    string NewUnit = Console.ReadLine();
-                    if (!Directory.Exists($"{systemOp}{language[0]}{slash}{NewUnit}"))
+                    string newUnit = Console.ReadLine();
+
+                    string firstCharLanguage = language[0].ToString();
+
+                    if (!Directory.Exists(Path.Combine(systemOp, firstCharLanguage,newUnit)))
                     {
-                        Directory.CreateDirectory($"{systemOp}{language[0]}{slash}{NewUnit}");
+                        Directory.CreateDirectory(Path.Combine(systemOp, firstCharLanguage, newUnit));
                         string test = null;
                         string jsonFile = JsonConvert.SerializeObject(test);
-                        File.WriteAllText($@"{systemOp}{language[0]}{slash}{NewUnit}{slash}W.json", test);
-                        File.WriteAllText($@"{systemOp}{language[0]}{slash}{NewUnit}{slash}E.json", test);
-                        File.WriteAllText($@"{systemOp}{language[0]}{slash}{NewUnit}{slash}D.json", test);
+                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "W.json"), jsonFile);
+                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "E.json"), jsonFile);
+                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "D.json"), jsonFile);
                     }
-                    else if (NewUnit == "0")
+                    else if (newUnit == "0")
                     {
                         Console.WriteLine("\n\nYou can't write 0 as a name\nClick Enter to continue");
                         Console.ReadKey();
@@ -179,7 +182,7 @@ namespace LanguageApp
             } while (unitBool == false);
 
         }// choosing unit
-        public static void AddingWord(Language language, string unit, string systemOp, string slash, string lanChar) 
+        public static void AddingWord(Language language, string unit, string systemOp, string lanChar) 
         {
             string word, wordInYourLanguage, category;
             CategoryType categoryName;
@@ -216,7 +219,7 @@ namespace LanguageApp
                 WordDescription w1 = new WordDescription(word, wordInYourLanguage, categoryName, language, unit);
                 List<WordDescription> mainList = new List<WordDescription>();
 
-                string json = File.ReadAllText(@$"{systemOp}{slash}{lanChar}{slash}{unit}{slash}{category}.json");
+                string json = File.ReadAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"));
                 if (!string.IsNullOrEmpty(json))
                 {
                     mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
@@ -225,12 +228,11 @@ namespace LanguageApp
                 mainList.Add(w1);
 
                 string jsonFile = JsonConvert.SerializeObject(mainList);
-                File.WriteAllText(@$"{systemOp}{slash}{lanChar}{slash}{unit}{slash}{category}.json", jsonFile);
-
+                File.WriteAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"), jsonFile);
 
             } while (correct == false);
         } // Adding new word 
-        public static void CheckList(string language, string systemOp, string unit, string slash)
+        public static void CheckList(string language, string systemOp, string unit)
         {
             bool correctAnswer = false;
             string choose = null;
@@ -265,7 +267,7 @@ namespace LanguageApp
                 Console.Clear();
 
                 List<WordDescription> mainList = new List<WordDescription>();
-                string json = File.ReadAllText($@"{systemOp}{language}{slash}{unit}{slash}{choose}.json");
+                string json = File.ReadAllText(Path.Combine(systemOp, language, unit, choose + ".json"));
 
                 if(!string.IsNullOrEmpty(json))
                     mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
@@ -298,7 +300,7 @@ namespace LanguageApp
                     {
                         mainList.RemoveAt(result - 1);
                         string jsonFile = JsonConvert.SerializeObject(mainList);
-                        File.WriteAllText($@"{systemOp}{language}{slash}{unit}{slash}{choose}.json", jsonFile);
+                        File.WriteAllText(Path.Combine(systemOp, language, unit, choose + ".json"), jsonFile);
                     }
                 }
                 else
