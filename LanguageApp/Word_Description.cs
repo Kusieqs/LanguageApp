@@ -49,12 +49,12 @@ namespace LanguageApp
         public CategoryType Category { get; set; }
 		public int Mistakes { get; set; }
 		public string Unit { get; set; }
-		public WordDescription(string word, string wordInYourLanguage, CategoryType category,Language language,string unit)
+		public WordDescription(string word, string wordInYourLanguage, CategoryType category,Language language,string unit,int mistakes)
 		{
 			this.Word = word;
 			this.WordInYourLanguage = wordInYourLanguage;
 			this.Category = category;
-			Mistakes = 0;
+			this.Mistakes = mistakes;
 			this.Language = language;
 			this.Unit = unit;
 
