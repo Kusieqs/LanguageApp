@@ -19,7 +19,7 @@ internal class Program
         string[] actualData = new string[2];
         #endregion
 
-        FirstTime(ref systemOp, ref firstTimeBool, ref Languages, ListOfWords); 
+        FirstTime(ref systemOp, ref firstTimeBool, ref Languages); 
 
         OverridingLanguages(systemOp, ref Languages);
 
@@ -101,7 +101,7 @@ internal class Program
         } while (end); 
 
     }
-    public static void FirstTime(ref string systemOp, ref bool firstTimeBool, ref List<Language> languages, List<WordDescription> xmlList)
+    public static void FirstTime(ref string systemOp, ref bool firstTimeBool, ref List<Language> languages)
     {
         if (!Directory.Exists($"{systemOp}LanguageApp"))
         {

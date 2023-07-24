@@ -3,16 +3,16 @@ using System.Xml.Serialization;
 using Newtonsoft.Json;
 namespace LanguageApp
 {
-	public static class Review
-	{
-		public static void MainReview(string language, string systemOp, string unit) 
-		{
-            
-            int mistakes = 0; 
+    public static class Review
+    {
+        public static void MainReview(string language, string systemOp, string unit)
+        {
+
+            int mistakes = 0;
             ConsoleKeyInfo key;
             int max = 0, min = 0;
-            bool legendary = false;
-            bool correctAnswer = false;
+            bool legendary = false, correctAnswer = false, mistakeLvl = false;
+
             do
             {
 
@@ -23,13 +23,23 @@ namespace LanguageApp
 
                 if (key.KeyChar == 'W' || key.KeyChar == 'E' || key.KeyChar == 'D')
                 {
-                    Console.WriteLine("Choose level: \n1.Easy (10 exercises)\n\n2.Medium (10-30 exercises)\n\n3.Hard (30-50 exercises)\n\n4.Legendary (All of words)\n");
+                    Console.WriteLine("Choose level: \n1.Easy (10 exercises)\n\n2.Medium (10-30 exercises)\n\n3.Hard (30-50 exercises)\n\n4.Legendary (All of words)\n\n5.Mistakes Level");
 
                     ConsoleKeyInfo k1 = new ConsoleKeyInfo();
                     k1 = Console.ReadKey();
-                    if (k1.KeyChar == '1' || k1.KeyChar == '2' || k1.KeyChar == '3' || k1.KeyChar == '4')
+                    if (k1.KeyChar == '1' || k1.KeyChar == '2' || k1.KeyChar == '3')
                     {
-                        HowManyWords(ref max, ref min, k1, ref legendary);
+                        HowManyWords(ref max, ref min, k1);
+                        correctAnswer = true;
+                    }
+                    else if(k1.KeyChar =='4')
+                    {
+                        legendary = true;
+                        correctAnswer = true;
+                    }
+                    else if(k1.KeyChar == '5')
+                    {
+                        mistakeLvl = true;
                         correctAnswer = true;
                     }
                 }
@@ -37,22 +47,28 @@ namespace LanguageApp
             } while (!correctAnswer);
 
 
-            string json = File.ReadAllText(Path.Combine(systemOp, language, unit, key.KeyChar.ToString()));
+            string json = File.ReadAllText(Path.Combine(systemOp, language, unit, key.KeyChar.ToString()+".json"));
             List<WordDescription> mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
 
-            if (mainList.Count > 0) 
+            if (mainList.Count > 0)
             {
                 Console.ReadKey();
 
-                if (legendary == true)
+                if (legendary)
                 {
-                    LegendaryLvl(ref mistakes, mainList);
+                    LegendaryLvl(ref mainList);
+                }
+                else if (mistakeLvl)
+                {
+                    MistakeLevel(ref mainList);
                 }
                 else
                 {
-                    Levels(min, max, ref mistakes,mainList);
+                    Levels(min, max, ref mainList);
                 }
 
+                string jsonWriter = JsonConvert.SerializeObject(mainList);
+                File.WriteAllText(Path.Combine(systemOp, language, unit, key.KeyChar.ToString()+".json"), jsonWriter);
             }
             else
             {
@@ -63,190 +79,318 @@ namespace LanguageApp
             }
 
         }// choosing which range of words and lvl
-        private static void Levels(int min, int max, ref int mistakes,List<WordDescription> mainList) 
+        private static void MistakeLevel(ref List<WordDescription> mainList)
         {
+            int maxMistake = mainList.Max(x => x.Mistakes);
+            Console.WriteLine(maxMistake);
+            Console.ReadKey();
+
+            List<WordDescription> copyList = mainList.Where(x => x.Mistakes == maxMistake || x.Mistakes == maxMistake - 1).ToList();
             string attempt;
+            int mistakes = 0;
             bool correctAnswer = false;
-            int count = mainList.Count;
-            Random random = new Random();
-            int howMany = random.Next(min, max + 1);
-
-            if (count > howMany)
+            foreach (var words in copyList)
             {
-                for (int i = 0; i < howMany; i++)
-                {
-                    int randomWord = random.Next(0, mainList.Count);
-
-                    do
-                    {
-                        Console.Clear();
-                        Console.Write(mainList[randomWord].WordInYourLanguage + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
-
-                        if (mainList[randomWord].Word.ToUpper() != attempt.ToUpper()) 
-                        {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.Read();
-                            correctAnswer = true;
-                        }
-                    } while (!correctAnswer);
-                    correctAnswer = false;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Correct\nClick Enter to continue");
-                    Console.ResetColor();
-                    Console.ReadKey();
-
-                    do
-                    {
-                        Console.Clear();
-                        Console.Write(mainList[randomWord].Word + ": ".PadLeft(5));  
-                        attempt = Console.ReadLine();
-
-                        if (mainList[randomWord].WordInYourLanguage.ToUpper() != attempt.ToUpper())
-                        {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.Read();
-                            correctAnswer = true;
-                        }
-
-                    } while (!correctAnswer);
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"\nCorrect\nClick Enter to continue");
-                    Console.Read();
-                    Console.ResetColor();
-                    Console.Clear();
-
-                    mainList.RemoveAt(randomWord);
-                }
-                Console.Clear();
-                Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
-                Console.Read();
-            }
-            else
-            {
-                for (int i = 0; i < howMany; i++)
-                {
-                    int randomWord = random.Next(0, mainList.Count);
-                    do
-                    {
-                        Console.Clear();
-                        Console.Write(mainList[randomWord].WordInYourLanguage + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
-
-                        if (mainList[randomWord].Word.ToUpper() != attempt.ToUpper())
-                        {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.Read();
-                            correctAnswer = true;
-                        }
-                    } while (!correctAnswer);
-                    correctAnswer = false;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Correct\nClick Enter to continue");
-                    Console.ResetColor();
-                    Console.ReadKey();
-
-                    do
-                    {
-                        Console.Clear();
-                        Console.Write(mainList[randomWord].Word + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
-
-                        if (mainList[randomWord].WordInYourLanguage.ToUpper() != attempt.ToUpper())
-                        {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.Read();
-                            correctAnswer = true;
-                        }
-                    } while (!correctAnswer);
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"\nCorrect\nClick Enter to continue");
-                    Console.Read();
-                    Console.ResetColor();
-                    Console.Clear();
-                }
-            }
-            Console.Clear();
-            Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
-            Console.Read();
-
-        }// Learning random words from the list
-        private static void LegendaryLvl(ref int Mistakes, List<WordDescription> mainList) 
-        {
-            string attempt;
-            int count = mainList.Count;
-            bool correctAnswer = false;
-            foreach (var words in mainList)
-            {
+                int howManyAttempts = 3;
                 do
                 {
                     Console.Clear();
+                    Console.WriteLine();
+                    Console.WriteLine($"Attempts: {howManyAttempts}");
                     Console.Write(words.WordInYourLanguage + ": ".PadLeft(5));
                     attempt = Console.ReadLine();
 
                     if (words.Word.ToUpper() != attempt.ToUpper())
                     {
-                        Mistakes++;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                        howManyAttempts -= 1;
+                        if (howManyAttempts == 0)
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word}\n\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            correctAnswer = true;
+                        }
+                        else
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Correct\nClick Enter to continue");
                         Console.ResetColor();
-                        Console.Read();
+                        Console.ReadKey();
                         correctAnswer = true;
                     }
+
                 } while (!correctAnswer);
+
+                howManyAttempts = 3;
                 correctAnswer = false;
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Correct\nClick Enter to continue");
-                Console.ResetColor();
-                Console.ReadKey();
 
                 do
                 {
                     Console.Clear();
+                    Console.WriteLine($"Attempts: {howManyAttempts}");
                     Console.Write(words.Word + ": ".PadLeft(5));
                     attempt = Console.ReadLine();
 
                     if (words.WordInYourLanguage.ToUpper() != attempt.ToUpper())
                     {
-                        Mistakes++;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                        howManyAttempts -= 1;
+                        if (howManyAttempts == 0)
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage}\n\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            correctAnswer = true;
+                        }
+                        else
+                        {
+                            mistakes++;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Correct\nClick Enter to continue");
                         Console.ResetColor();
-                        Console.Read();
+                        Console.ReadKey();
                         correctAnswer = true;
                     }
                 } while (!correctAnswer);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\nCorrect\nClick Enter to continue");
-                Console.Read();
-                Console.ResetColor();
-                Console.Clear();
+                correctAnswer = false;
 
             }
             Console.Clear();
-            Console.WriteLine($"\nMistakes: {Mistakes}\nClick Enter to continue");
+            Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
+            Console.Read();
+        }// Learning words with the most numbers of mistakes
+        private static void Levels(int min, int max, ref List<WordDescription> mainList)
+        {
+            string attempt;
+            bool correctAnswer = false;
+            int count = mainList.Count, mistakes = 0;
+            Random random = new Random();
+            int howMany = random.Next(min, max + 1);
+
+            for (int i = 0; i < howMany; i++)
+            {
+                int howManyAttempts = 3;
+
+                int randomWord = random.Next(0, mainList.Count);
+
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Attempts: {howManyAttempts}");
+                    Console.Write(mainList[randomWord].WordInYourLanguage + ": ".PadLeft(5));
+                    attempt = Console.ReadLine();
+
+                    if (mainList[randomWord].Word.ToUpper() != attempt.ToUpper())
+                    {
+                        howManyAttempts -= 1;
+                        if (howManyAttempts == 0)
+                        {
+                            mistakes++;
+                            mainList[randomWord].Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].Word}\n\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            correctAnswer = true;
+                        }
+                        else
+                        {
+                            mistakes++;
+                            mainList[randomWord].Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Correct\nClick Enter to continue");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        correctAnswer = true;
+                    }
+
+
+                } while (!correctAnswer);
+
+                howManyAttempts = 3;
+                correctAnswer = false;
+
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Attempts: {howManyAttempts}");
+                    Console.Write(mainList[randomWord].Word + ": ".PadLeft(5));
+                    attempt = Console.ReadLine();
+
+                    if (mainList[randomWord].WordInYourLanguage.ToUpper() != attempt.ToUpper())
+                    {
+                        howManyAttempts -= 1;
+                        if (howManyAttempts == 0)
+                        {
+                            mistakes++;
+                            mainList[randomWord].Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].WordInYourLanguage}\n\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            correctAnswer = true;
+                        }
+                        else
+                        {
+                            mistakes++;
+                            mainList[randomWord].Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Correct\nClick Enter to continue");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        correctAnswer = true;
+                    }
+
+                } while (!correctAnswer);
+                correctAnswer = false;
+            }
+            Console.Clear();
+            Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
+            Console.Read();
+        }    // Learning random words from the list
+        private static void LegendaryLvl(ref List<WordDescription> mainList)
+        {
+            string attempt;
+            int mistakes = 0;
+            bool correctAnswer = false;
+            foreach (var words in mainList)
+            {
+                int howManyAttempts = 3;
+
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Attempts: {howManyAttempts}");
+                    Console.Write(words.WordInYourLanguage + ": ".PadLeft(5));
+                    attempt = Console.ReadLine();
+
+                    if (words.Word.ToUpper() != attempt.ToUpper())
+                    {
+                        howManyAttempts -= 1;
+                        if(howManyAttempts == 0)
+                        {
+                            mistakes++;
+                            words.Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word}\n\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            correctAnswer = true;
+                        }
+                        else
+                        {
+                            mistakes++;
+                            words.Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Correct\nClick Enter to continue");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        correctAnswer = true;
+                    }
+
+
+                } while (!correctAnswer);
+
+                howManyAttempts = 3;
+                correctAnswer = false;
+
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Attempts: {howManyAttempts}");
+                    Console.Write(words.Word + ": ".PadLeft(5));
+                    attempt = Console.ReadLine();
+
+                    if (words.WordInYourLanguage.ToUpper() != attempt.ToUpper())
+                    {
+                        howManyAttempts -= 1;
+                        if (howManyAttempts == 0)
+                        {
+                            mistakes++;
+                            words.Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage}\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            correctAnswer = true;
+                        }
+                        else
+                        {
+                            mistakes++;
+                            words.Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                        }
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"\nCorrect\nClick Enter to continue");
+                        Console.Read();
+                        Console.ResetColor();
+                        Console.Clear();
+                        correctAnswer = true;
+                    }
+                } while (!correctAnswer);
+                correctAnswer = false;
+
+            }
+            Console.Clear();
+            Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
             Console.Read();
 
         } // Learning all the words
-        private static void HowManyWords(ref int max, ref int min,ConsoleKeyInfo k1, ref bool legendary)
+        private static void HowManyWords(ref int max, ref int min, ConsoleKeyInfo k1)
         {
 
-            switch(k1.KeyChar)
+            switch (k1.KeyChar)
             {
                 case '1':
                     min = 10;
@@ -260,12 +404,10 @@ namespace LanguageApp
                     min = 30;
                     max = 50;
                     break;
-                case '4':
-                    legendary = true;
-                    break;
             }
 
         } // assinging a range of words
     }
 }
+
 

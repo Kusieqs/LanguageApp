@@ -189,8 +189,8 @@ namespace LanguageApp
             Console.Clear();
             bool correct = false;
 
-            AddingWordMethods.WordWriting(out word, out wordInYourLanguage);
-            category = AddingWordMethods.category(out categoryName);
+            WordWriting(out word, out wordInYourLanguage);
+            category = Category(out categoryName);
             do
             {
                 Console.Clear();
@@ -216,7 +216,7 @@ namespace LanguageApp
 
                 Console.Clear();
 
-                WordDescription w1 = new WordDescription(word, wordInYourLanguage, categoryName, language, unit);
+                WordDescription w1 = new WordDescription(word, wordInYourLanguage, categoryName, language, unit, 0);
                 List<WordDescription> mainList = new List<WordDescription>();
 
                 string json = File.ReadAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"));
@@ -312,5 +312,55 @@ namespace LanguageApp
 
             } while (!correctWordsList);
         }// List of all words
+        public static void WordWriting(out string word, out string wordInYourLanguage) /// Entering vocabulary and vocabulary data in your language
+        {
+            Console.Clear();
+            Console.Write($"Write a word in another language:    ");
+            do
+            {
+                word = Console.ReadLine();
+
+            } while (word.Length == 0);
+
+            Console.Write($"\n\nWrite a word in your language:    ");
+            do
+            {
+                wordInYourLanguage = Console.ReadLine();
+
+            } while (wordInYourLanguage.Length == 0);
+
+
+        }// Entering data of word
+        public static string Category(out CategoryType categoryName) // Choosing word category
+        {
+            bool correctChoosing = false;
+            do
+            {
+
+                Console.Clear();
+                Console.WriteLine("\n\nChoose a category of your word: Word,Expression,Diffrent (W/E/D)");
+                ConsoleKeyInfo choose = new ConsoleKeyInfo();
+                choose = Console.ReadKey();
+
+                switch (choose.Key.ToString().ToUpper())
+                {
+                    case "W":
+                        categoryName = CategoryType.Word;
+                        return "W";
+                    case "E":
+                        categoryName = CategoryType.Expression;
+                        return "E";
+                    case "D":
+                        categoryName = CategoryType.Diffrent;
+                        return "D";
+                    default:
+                        break;
+                }
+            } while (correctChoosing == false);
+
+            throw new FormatException("Error with choosing category");
+        }
+
+
     }
 }
