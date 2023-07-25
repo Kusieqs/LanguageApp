@@ -22,6 +22,7 @@ namespace LanguageApp
                     Console.WriteLine($"{ChoosingLangWrite.CharLanguage} - {ChoosingLangWrite.Language1}");
                 }
 
+                Console.Write("\n\nLetter: ");
                 ConsoleKeyInfo result = new ConsoleKeyInfo();
                 result = Console.ReadKey();
 
@@ -75,7 +76,7 @@ namespace LanguageApp
                     Console.ResetColor();
                     continue;
                 }
-                Console.Write("Index of new language (Letter): ");
+                Console.Write("\nIndex of new language (Letter): ");
                 charlanguage = Console.ReadLine().ToUpper();
 
                 if (charlanguage == "0")
@@ -126,7 +127,7 @@ namespace LanguageApp
             {
                 List<string> foldersNames = new List<string>();
                 Console.Clear();
-                Console.WriteLine("If you want to create new Unit write number 0 or choose one of this: \n\n\nUnits:\n\n");
+                Console.WriteLine("If you want to create new Unit write number 0 or choose one of this: \n\n\nUnits:\n");
                 string[] Folders = Directory.GetDirectories(Path.Combine(systemOp, language[0].ToString()));
                 foreach (var direct in Folders)
                 {
@@ -137,7 +138,7 @@ namespace LanguageApp
                     Console.WriteLine($"{i + 1}. {foldersNames[i]}");
                 }
 
-
+                Console.Write("\n\nNumber: ");
                 bool unitChoosing = int.TryParse(Console.ReadLine(), out int correctUnit);
                 if (unitChoosing == false)
                     continue;
@@ -155,11 +156,12 @@ namespace LanguageApp
                     if (!Directory.Exists(Path.Combine(systemOp, firstCharLanguage,newUnit)))
                     {
                         Directory.CreateDirectory(Path.Combine(systemOp, firstCharLanguage, newUnit));
-                        string test = null;
-                        string jsonFile = JsonConvert.SerializeObject(test);
-                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "W.json"), jsonFile);
-                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "E.json"), jsonFile);
-                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "D.json"), jsonFile);
+                        string fileString = "";
+                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "W.json"), fileString);
+                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "E.json"), fileString);
+                        File.WriteAllText(Path.Combine(systemOp, firstCharLanguage, newUnit, "D.json"), fileString);
+
+
                     }
                     else if (newUnit == "0")
                     {
@@ -213,22 +215,28 @@ namespace LanguageApp
                     return;
                 }
 
-
                 Console.Clear();
-
                 WordDescription w1 = new WordDescription(word, wordInYourLanguage, categoryName, language, unit, 0);
-                List<WordDescription> mainList = new List<WordDescription>();
-
                 string json = File.ReadAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"));
+                string jsonFile;
+
                 if (!string.IsNullOrEmpty(json))
                 {
+                    List<WordDescription> mainList = new List<WordDescription>();
                     mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
+                    mainList.Add(w1);
+                    jsonFile = JsonConvert.SerializeObject(mainList);
+                    File.WriteAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"), jsonFile);
                 }
-
-                mainList.Add(w1);
-
-                string jsonFile = JsonConvert.SerializeObject(mainList);
+                else
+                {
+                    List<WordDescription> copyList = new List<WordDescription>();
+                    copyList.Add(w1);
+                    jsonFile = JsonConvert.SerializeObject(copyList);
+                    File.WriteAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"), jsonFile);
+                }
                 File.WriteAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"), jsonFile);
+
 
             } while (correct == false);
         } // Adding new word 
@@ -292,15 +300,22 @@ namespace LanguageApp
                     Console.Write("Number: ");
                     bool correct = int.TryParse(Console.ReadLine(), out int result);
 
-                    if (result == 0)
+                    if (result == 0 && correct)
                     {
                         correctWordsList = true;
                     }
-                    else if (correct == true && result > 0)
+                    else if (correct && result > 0 && result <= mainList.Count)
                     {
                         mainList.RemoveAt(result - 1);
                         string jsonFile = JsonConvert.SerializeObject(mainList);
                         File.WriteAllText(Path.Combine(systemOp, language, unit, choose + ".json"), jsonFile);
+                    }
+                    else 
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n\nWrong number!!\nClick enter to conitnue");
+                        Console.ReadKey();
+                        Console.ResetColor();
                     }
                 }
                 else
@@ -337,7 +352,6 @@ namespace LanguageApp
             do
             {
 
-                Console.Clear();
                 Console.WriteLine("\n\nChoose a category of your word: Word,Expression,Diffrent (W/E/D)");
                 ConsoleKeyInfo choose = new ConsoleKeyInfo();
                 choose = Console.ReadKey();
