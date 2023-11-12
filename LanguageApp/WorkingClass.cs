@@ -271,7 +271,6 @@ namespace LanguageApp
             bool correctWordsList = false;
             do
             {
-                int count = 0;
                 Console.Clear();
 
                 List<WordDescription> mainList = new List<WordDescription>();
@@ -283,7 +282,7 @@ namespace LanguageApp
                 int x = 1;
                 if (mainList.Count > 0)
                 {
-                    Console.WriteLine("Nr  \t Mistakes\t\tword\t\t\tWord\n");
+                    Console.WriteLine("Nr  \t Mistakes\t\tWord\t\t\tWord in your language\n");
                     foreach (var word in mainList)
                     {
                         Console.SetCursorPosition(0, x * 2);
