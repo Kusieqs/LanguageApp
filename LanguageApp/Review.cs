@@ -7,8 +7,6 @@ namespace LanguageApp
     {
         public static void MainReview(string language, string systemOp, string unit)
         {
-
-            int mistakes = 0;
             ConsoleKeyInfo key;
             int max = 0, min = 0;
             bool legendary = false, correctAnswer = false, mistakeLvl = false;
@@ -371,12 +369,10 @@ namespace LanguageApp
                     }
                     else
                     {
-                        Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"\nCorrect\nClick Enter to continue");
-                        Console.Read();
+                        Console.ReadKey();
                         Console.ResetColor();
-                        Console.Clear();
                         correctAnswer = true;
                     }
                 } while (!correctAnswer);
