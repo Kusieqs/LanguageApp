@@ -102,31 +102,24 @@ namespace LanguageApp
                     if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                     {
                         howManyAttempts -= 1;
+                        mistakes++;
+                        words.Mistakes += 1;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\n\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
                         {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
+                        Console.ResetColor();
+                        Console.ReadKey();
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Correct\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.ReadKey();
-                        correctAnswer = true;
+                        CorrectAnswer(ref correctAnswer);
                     }
 
                 } while (!correctAnswer);
@@ -144,31 +137,25 @@ namespace LanguageApp
                     if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                     {
                         howManyAttempts -= 1;
+                        mistakes++;
+                        words.Mistakes += 1;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\n\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
                         {
-                            mistakes++;
-                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
+                        Console.ResetColor();
+                        Console.ReadKey();
+
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Correct\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.ReadKey();
-                        correctAnswer = true;
+                        CorrectAnswer(ref correctAnswer);
                     }
                 } while (!correctAnswer);
                 correctAnswer = false;
@@ -182,7 +169,7 @@ namespace LanguageApp
         {
             string attempt;
             bool correctAnswer = false;
-            int count = mainList.Count, mistakes = 0;
+            int  mistakes = 0;
             Random random = new Random();
             int howMany = random.Next(min, max + 1);
 
@@ -201,34 +188,25 @@ namespace LanguageApp
 
                     if (mainList[randomWord].Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                     {
+
+                        mainList[randomWord].Mistakes += 1;
                         howManyAttempts -= 1;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            mistakes++;
-                            mainList[randomWord].Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].Word.Trim()}\n\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].Word.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
                         {
-                            mistakes++;
-                            mainList[randomWord].Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
+                        Console.ResetColor();
+                        Console.ReadKey();
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Correct\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.ReadKey();
-                        correctAnswer = true;
+                        CorrectAnswer(ref correctAnswer);
                     }
 
 
@@ -247,33 +225,24 @@ namespace LanguageApp
                     if (mainList[randomWord].WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                     {
                         howManyAttempts -= 1;
+                        mistakes++;
+                        mainList[randomWord].Mistakes += 1;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            mistakes++;
-                            mainList[randomWord].Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].WordInYourLanguage.Trim()}\n\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].Word.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
                         {
-                            mistakes++;
-                            mainList[randomWord].Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
+                        Console.ResetColor();
+                        Console.ReadKey();
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Correct\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.ReadKey();
-                        correctAnswer = true;
+                        CorrectAnswer(ref correctAnswer);
                     }
 
                 } while (!correctAnswer);
@@ -302,33 +271,24 @@ namespace LanguageApp
                     if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                     {
                         howManyAttempts -= 1;
-                        if(howManyAttempts == 0)
+                        mistakes++;
+                        words.Mistakes += 1;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        if (howManyAttempts == 0)
                         {
-                            mistakes++;
-                            words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\n\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
                         {
-                            mistakes++;
-                            words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
+                        Console.ResetColor();
+                        Console.ReadKey();
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Correct\nClick Enter to continue");
-                        Console.ResetColor();
-                        Console.ReadKey();
-                        correctAnswer = true;
+                        CorrectAnswer(ref correctAnswer);
                     }
 
 
@@ -347,33 +307,24 @@ namespace LanguageApp
                     if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                     {
                         howManyAttempts -= 1;
+                        mistakes++;
+                        words.Mistakes += 1;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            mistakes++;
-                            words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
                             correctAnswer = true;
                         }
                         else
                         {
-                            mistakes++;
-                            words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
+                        Console.ResetColor();
+                        Console.ReadKey();
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"\nCorrect\nClick Enter to continue");
-                        Console.ReadKey();
-                        Console.ResetColor();
-                        correctAnswer = true;
+                        CorrectAnswer(ref correctAnswer);
                     }
                 } while (!correctAnswer);
                 correctAnswer = false;
@@ -404,6 +355,14 @@ namespace LanguageApp
             }
 
         } // assinging a range of words
+        private static void CorrectAnswer(ref bool correctAnswer)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n\nCorrect\nClick Enter to continue");
+            Console.ReadKey();
+            Console.ResetColor();
+            correctAnswer = true;
+        }
     }
 }
 

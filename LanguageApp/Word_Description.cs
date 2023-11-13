@@ -59,8 +59,15 @@ namespace LanguageApp
 			this.Unit = unit;
 
 		}
-		public WordDescription()
-		{ }
+		public WordDescription(WordDescription wordDescription)
+		{
+			this.Word = wordDescription.Word;
+			this.WordInYourLanguage = wordDescription.WordInYourLanguage;
+			this.Category = wordDescription.Category;
+			this.Mistakes = wordDescription.Mistakes;
+			this.Language = wordDescription.Language;
+			this.Unit = wordDescription.Unit;
+        }
 
 	}
 }
