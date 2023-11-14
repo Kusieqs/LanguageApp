@@ -107,7 +107,7 @@ namespace LanguageApp
                         Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
@@ -230,7 +230,7 @@ namespace LanguageApp
                         Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].Word.Trim()}\nClick Enter to continue");
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].WordInYourLanguage.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
@@ -276,7 +276,7 @@ namespace LanguageApp
                         Console.ForegroundColor = ConsoleColor.Red;
                         if (howManyAttempts == 0)
                         {
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
+                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\nClick Enter to continue");
                             correctAnswer = true;
                         }
                         else
