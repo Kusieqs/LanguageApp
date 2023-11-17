@@ -5,13 +5,13 @@ namespace LanguageApp
     public class Language
 	{
 		private string language;
-		private string charLanguage;
-		public Language(LanguageName language,CharLanguage charLanguage)
+		private char charLanguage;
+		public Language(LanguageName language,char charLanguage)
 		{
 			this.language =language.ToString();
-			this.charLanguage = charLanguage.ToString();
+			this.charLanguage = charLanguage;
 		}
-        public Language(string language, string charLanguage)
+        public Language(string language, char charLanguage)
         {
 			this.language = language;
 			this.charLanguage = charLanguage;
@@ -29,7 +29,7 @@ namespace LanguageApp
 				language = value;
 			}
 		}
-		public string CharLanguage
+		public char CharLanguage
 		{
 			get
 			{

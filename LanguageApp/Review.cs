@@ -121,6 +121,7 @@ namespace LanguageApp
             bool correctAnswer = false;
             Random random = new Random();
             List<WordDescription> copyList = mainList.Where(x => x.Mistakes >= minMistake).ToList();
+
             bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false, exit = false;
             QuestionAboutMode(ref wordInYourLanguage, ref wordInAnotherLanguage, ref mix, ref exit);
 
@@ -132,10 +133,9 @@ namespace LanguageApp
                 int whichOne = -1;
                 if (mix)
                     whichOne = random.Next(0, 2);
-
+                int howManyAttempts = 3;
                 if (whichOne == 1 || wordInAnotherLanguage)
                 {
-                    int howManyAttempts = 3;
                     do
                     {
                         Console.Clear();
@@ -168,7 +168,7 @@ namespace LanguageApp
 
                     } while (!correctAnswer);
                 }
-                else if (wihchOne == 0 || wordInYourLanguage)
+                else if (whichOne == 0 || wordInYourLanguage)
                 {
                     do
                     {
