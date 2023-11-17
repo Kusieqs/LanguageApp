@@ -177,6 +177,12 @@ namespace LanguageApp
         }// Learning words with the most numbers of mistakes
         private static void Levels(int min, int max, ref List<WordDescription> mainList)
         {
+            bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false, exit = false;
+            QuestionAboutMode(ref wordInYourLanguage, ref wordInAnotherLanguage, ref mix, ref exit);
+
+            if (exit)
+                return;
+
             string attempt;
             bool correctAnswer = false;
             int  mistakes = 0;
@@ -185,11 +191,14 @@ namespace LanguageApp
 
             for (int i = 0; i < howMany; i++)
             {
-                int whichOne = random.Next(0, 2);
+                int whichOne = -1;  
+                if (mix)
+                    whichOne = random.Next(0, 2);
+
                 int howManyAttempts = 3;
                 int randomWord = random.Next(0, mainList.Count);
 
-                if (whichOne == 1)
+                if (whichOne == 1 || wordInAnotherLanguage)
                 {
                     do
                     {
@@ -224,7 +233,7 @@ namespace LanguageApp
 
                     } while (!correctAnswer);
                 }
-                else
+                else if(wordInYourLanguage || whichOne == 0)
                 {
                     do
                     {
@@ -267,34 +276,11 @@ namespace LanguageApp
         }    // Learning random words from the list
         private static void LegendaryLvl(ref List<WordDescription> mainList)
         {
-            bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false;
-            string key = Console.ReadLine();
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("Choose one of the options\n\n\n");
-                Console.Write($"1.You have to write word in your language\n\n2.You have to write word in {mainList[0].Language.Language1}\n\n3.Mix with words\n\n0. Exit\nNumber: ");
-                key = Console.ReadLine();
-                switch(key)
-                {
-                    case "1":;
-                        wordInYourLanguage = true;
-                        break;
-                    case "2":
-                        wordInAnotherLanguage = true;
-                        break;
-                    case "3":
-                        mix = true;
-                        break;
-                    case "0":
-                        return;
+            bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false, exit = false;
+            QuestionAboutMode(ref wordInYourLanguage, ref wordInAnotherLanguage, ref mix, ref exit);
 
-                }
-                
-
-            } while (!wordInAnotherLanguage && !wordInYourLanguage && !mix);
-
-
+            if (exit)
+                return;
 
             string attempt;
             int mistakes = 0;
@@ -413,7 +399,34 @@ namespace LanguageApp
             Console.ReadKey();
             Console.ResetColor();
             correctAnswer = true;
-        }
+        } // method to show correct answer
+        private static void QuestionAboutMode(ref bool wordInYourLanguage, ref bool wordInAnotherLanguage, ref bool mix,ref bool exit)
+        {
+            string key = Console.ReadLine();
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Choose one of the options\n\n\n");
+                Console.Write($"1.You have to write word in your language\n\n2.You have to write word in {mainList[0].Language.Language1}\n\n3.Mix with words\n\n0. Exit\nNumber: ");
+                key = Console.ReadLine();
+                switch (key)
+                {
+                    case "1":
+                        wordInYourLanguage = true;
+                        return;
+                    case "2":
+                        wordInAnotherLanguage = true;
+                        return;
+                    case "3":
+                        mix = true;
+                        return;
+                    case "0":
+                        exit = true;
+                        return;
+                }
+            } while (true);
+        }// choosing mode of review
+
     }
 }
 
