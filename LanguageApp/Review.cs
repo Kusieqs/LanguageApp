@@ -33,18 +33,18 @@ namespace LanguageApp
                         case '2':
                         case '3':
                             HowManyWords(ref max, ref min, k1);
-                            correctAnswer = true;
                             break;
                         case '4':
                             legendary = true;
-                            correctAnswer = true;
                             break;
                         case '5':
                             mistakeLvl = true;
-                            correctAnswer = true;
                             break;
                         case '0':
                             return;
+                        default:
+                            correctAnswer = false;
+                            break;
 
                     }
                 }
@@ -61,7 +61,7 @@ namespace LanguageApp
 
 
 
-            if (mainList.Count > null)
+            if (mainList.Count > 0)
             {
                 Console.ReadKey();
 
@@ -94,17 +94,45 @@ namespace LanguageApp
         private static void MistakeLevel(ref List<WordDescription> mainList)
         {
             int maxMistake = mainList.Max(x => x.Mistakes);
-            List<WordDescription> copyList = mainList.Where(x => x.Mistakes == maxMistake || x.Mistakes == maxMistake - 1).ToList();
+            int minMistake = 0;
+            do
+            {
+                Console.Clear();
+                Console.Write($"Number of maximum value of mistake: {maxMistake}\n\nWrite minimal number of mistakes (Write 0 to exit): ");
+                minMistake = int.Parse(Console.ReadLine());
+                Console.Clear();
+
+                if (minMistake < 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error\nMinimal number of mistakes can't be less than 0\nPress Enter to continue");
+                    Console.ReadKey();
+                    Console.ResetColor();
+                }
+                else if (minMistake == 0)
+                    return;
+                else
+                    break;
+
+            } while (true);
+
             string attempt;
             int mistakes = 0;
             bool correctAnswer = false;
+
+            List<WordDescription> copyList = mainList.Where(x => x.Mistakes >= minMistake).ToList();
+            bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false, exit = false;
+            QuestionAboutMode(ref wordInYourLanguage, ref wordInAnotherLanguage, ref mix, ref exit);
+
+            if (exit)
+                return;
+
             foreach (var words in copyList)
             {
                 int howManyAttempts = 3;
                 do
                 {
                     Console.Clear();
-                    Console.WriteLine();
                     Console.WriteLine($"Attempts: {howManyAttempts}");
                     Console.Write(words.WordInYourLanguage.Trim() + ": ".PadLeft(5));
                     attempt = Console.ReadLine();
@@ -407,7 +435,7 @@ namespace LanguageApp
             {
                 Console.Clear();
                 Console.WriteLine("Choose one of the options\n\n\n");
-                Console.Write($"1.You have to write word in your language\n\n2.You have to write word in {mainList[0].Language.Language1}\n\n3.Mix with words\n\n0. Exit\nNumber: ");
+                Console.Write($"1.You have to write word in your language\n\n2.You have to write word in another language\n\n3.Mix with words\n\n0. Exit\nNumber: ");
                 key = Console.ReadLine();
                 switch (key)
                 {
