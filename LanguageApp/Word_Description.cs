@@ -68,6 +68,8 @@ namespace LanguageApp
 			this.Language = wordDescription.Language;
 			this.Unit = wordDescription.Unit;
         }
+		public WordDescription()
+		{ }
 
 	}
 }
