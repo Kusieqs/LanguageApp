@@ -248,21 +248,22 @@ namespace LanguageApp
             Console.WriteLine("Do you want to see words,expresions,diffrent? W/E/D");
             do
             {
+                correctAnswer = true;
                 ConsoleKeyInfo key1 = new ConsoleKeyInfo();
                 key1 = Console.ReadKey();
                 switch (key1.KeyChar.ToString().ToUpper())
                 {
                     case "W":
                         choose = "W";
-                        correctAnswer = true;
                         break;
                     case "E":
                         choose = "E";
-                        correctAnswer = true;
                         break;
                     case "D":
                         choose = "D";
-                        correctAnswer = true;
+                        break;
+                    default:
+                        correctAnswer = false;
                         break;
 
                 }

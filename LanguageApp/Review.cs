@@ -13,7 +13,7 @@ namespace LanguageApp
 
             do
             {
-
+                correctAnswer = true;
                 Console.Clear();
                 Console.WriteLine("Do you want review expresion or words or diffrent? W/E/D (Write 0 to exit)");
                 key = Console.ReadKey();
@@ -25,34 +25,43 @@ namespace LanguageApp
 
                     ConsoleKeyInfo k1 = new ConsoleKeyInfo();
                     k1 = Console.ReadKey();
-                    if (k1.KeyChar == '1' || k1.KeyChar == '2' || k1.KeyChar == '3')
+
+
+                    switch(k1.KeyChar)
                     {
-                        HowManyWords(ref max, ref min, k1);
-                        correctAnswer = true;
+                        case '1':
+                        case '2':
+                        case '3':
+                            HowManyWords(ref max, ref min, k1);
+                            correctAnswer = true;
+                            break;
+                        case '4':
+                            legendary = true;
+                            correctAnswer = true;
+                            break;
+                        case '5':
+                            mistakeLvl = true;
+                            correctAnswer = true;
+                            break;
+                        case '0':
+                            return;
+
                     }
-                    else if (k1.KeyChar == '4')
-                    {
-                        legendary = true;
-                        correctAnswer = true;
-                    }
-                    else if (k1.KeyChar == '5')
-                    {
-                        mistakeLvl = true;
-                        correctAnswer = true;
-                    }
-                    else if (k1.KeyChar == '0')
-                        return;
                 }
                 else if (key.KeyChar == '0')
                     return;
 
             } while (!correctAnswer);
 
-
+            List<WordDescription> mainList = new List<WordDescription>();
             string json = File.ReadAllText(Path.Combine(systemOp, language, unit, key.KeyChar.ToString()+".json"));
-            List<WordDescription> mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
 
-            if (mainList.Count > 0)
+            if (!string.IsNullOrEmpty(json))
+                mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
+
+
+
+            if (mainList.Count > null)
             {
                 Console.ReadKey();
 
@@ -74,6 +83,7 @@ namespace LanguageApp
             }
             else
             {
+                Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error\nFile with words or expresions is empty\nPress Enter to continue");
                 Console.ReadKey();
@@ -258,28 +268,29 @@ namespace LanguageApp
         private static void LegendaryLvl(ref List<WordDescription> mainList)
         {
             bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false;
-            ConsoleKeyInfo key = new ConsoleKeyInfo();
+            string key = Console.ReadLine();
             do
             {
                 Console.Clear();
                 Console.WriteLine("Choose one of the options\n\n\n");
-                Console.Write($"1.You have to write word in your language\n\n2.You have to write word in {mainList[0].Language.Language1}\n\n3.Mix with words\n\n\nNumber: ");
-                key = Console.ReadKey();
-                switch(key.KeyChar)
+                Console.Write($"1.You have to write word in your language\n\n2.You have to write word in {mainList[0].Language.Language1}\n\n3.Mix with words\n\n0. Exit\nNumber: ");
+                key = Console.ReadLine();
+                switch(key)
                 {
-                    case '1':;
+                    case "1":;
                         wordInYourLanguage = true;
                         break;
-                    case '2':
+                    case "2":
                         wordInAnotherLanguage = true;
                         break;
-                    case '3':
+                    case "3":
                         mix = true;
                         break;
-                    default:
+                    case "0":
                         return;
 
                 }
+                
 
             } while (!wordInAnotherLanguage && !wordInYourLanguage && !mix);
 
@@ -297,7 +308,7 @@ namespace LanguageApp
 
                 if(mix)
                     whichOne = random.Next(0,2);
-
+                correctAnswer = false;
 
                 if (wordInAnotherLanguage || whichOne == 0)
                 {
@@ -337,8 +348,6 @@ namespace LanguageApp
                 }
                 else if(wordInYourLanguage || whichOne == 1)
                 {
-                    howManyAttempts = 3;
-                    correctAnswer = false;
                     do
                     {
                         Console.Clear();
@@ -369,7 +378,6 @@ namespace LanguageApp
                             CorrectAnswer(ref correctAnswer);
                         }
                     } while (!correctAnswer);
-                    correctAnswer = false;
 
                 }
             }
