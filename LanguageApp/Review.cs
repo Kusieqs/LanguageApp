@@ -119,7 +119,7 @@ namespace LanguageApp
             string attempt;
             int mistakes = 0;
             bool correctAnswer = false;
-
+            Random random = new Random();
             List<WordDescription> copyList = mainList.Where(x => x.Mistakes >= minMistake).ToList();
             bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false, exit = false;
             QuestionAboutMode(ref wordInYourLanguage, ref wordInAnotherLanguage, ref mix, ref exit);
@@ -129,75 +129,79 @@ namespace LanguageApp
 
             foreach (var words in copyList)
             {
-                int howManyAttempts = 3;
-                do
-                {
-                    Console.Clear();
-                    Console.WriteLine($"Attempts: {howManyAttempts}");
-                    Console.Write(words.WordInYourLanguage.Trim() + ": ".PadLeft(5));
-                    attempt = Console.ReadLine();
+                int whichOne = -1;
+                if (mix)
+                    whichOne = random.Next(0, 2);
 
-                    if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
+                if (whichOne == 1 || wordInAnotherLanguage)
+                {
+                    int howManyAttempts = 3;
+                    do
                     {
-                        howManyAttempts -= 1;
-                        mistakes++;
-                        words.Mistakes += 1;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        if (howManyAttempts == 0)
+                        Console.Clear();
+                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.Write(words.WordInYourLanguage.Trim() + ": ".PadLeft(5));
+                        attempt = Console.ReadLine();
+
+                        if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\nClick Enter to continue");
-                            correctAnswer = true;
+                            howManyAttempts -= 1;
+                            mistakes++;
+                            words.Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            if (howManyAttempts == 0)
+                            {
+                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\nClick Enter to continue");
+                                correctAnswer = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            }
+                            Console.ResetColor();
+                            Console.ReadKey();
                         }
                         else
                         {
-                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            CorrectAnswer(ref correctAnswer);
                         }
-                        Console.ResetColor();
-                        Console.ReadKey();
-                    }
-                    else
-                    {
-                        CorrectAnswer(ref correctAnswer);
-                    }
 
-                } while (!correctAnswer);
-
-                howManyAttempts = 3;
-                correctAnswer = false;
-
-                do
+                    } while (!correctAnswer);
+                }
+                else if (wihchOne == 0 || wordInYourLanguage)
                 {
-                    Console.Clear();
-                    Console.WriteLine($"Attempts: {howManyAttempts}");
-                    Console.Write(words.Word.Trim() + ": ".PadLeft(5));
-                    attempt = Console.ReadLine();
-
-                    if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
+                    do
                     {
-                        howManyAttempts -= 1;
-                        mistakes++;
-                        words.Mistakes += 1;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        if (howManyAttempts == 0)
+                        Console.Clear();
+                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.Write(words.Word.Trim() + ": ".PadLeft(5));
+                        attempt = Console.ReadLine();
+
+                        if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
-                            Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
-                            correctAnswer = true;
+                            howManyAttempts -= 1;
+                            mistakes++;
+                            words.Mistakes += 1;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            if (howManyAttempts == 0)
+                            {
+                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
+                                correctAnswer = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            }
+                            Console.ResetColor();
+                            Console.ReadKey();
                         }
                         else
                         {
-                            Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+                            CorrectAnswer(ref correctAnswer);
                         }
-                        Console.ResetColor();
-                        Console.ReadKey();
-
-                    }
-                    else
-                    {
-                        CorrectAnswer(ref correctAnswer);
-                    }
-                } while (!correctAnswer);
-                correctAnswer = false;
-
+                    } while (!correctAnswer);
+                    correctAnswer = false;
+                }
             }
             Console.Clear();
             Console.WriteLine($"\nMistakes: {mistakes}\nClick Enter to continue");
