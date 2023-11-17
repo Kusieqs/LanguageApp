@@ -37,11 +37,10 @@ namespace LanguageApp
                 {
                     foreach (var StringAndChar in languages)
                     {
-                        char.TryParse(StringAndChar.CharLanguage, out char Letter); 
-                        if (Letter == result.KeyChar)
+                        if(result.KeyChar.ToString().ToUpper() == StringAndChar.CharLanguage.ToString())
                         {
                             actualData[0] = StringAndChar.Language1;
-                            actualData[1] = StringAndChar.CharLanguage;
+                            actualData[1] = StringAndChar.CharLanguage.ToString();
                         }
                     }
                 }
@@ -81,23 +80,20 @@ namespace LanguageApp
 
                 if (charlanguage == "0")
                     break;
-
-                bool correctindex = Enum.TryParse(charlanguage, out CharLanguage nameChar); 
-                if (correctindex == false)
+                else if (charlanguage.Length > 1)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\nWrong index in our data\nCLICK ENTER TO CONTINUE");
+                    Console.WriteLine("\nWrong index \nCLICK ENTER TO CONTINUE");
                     Console.ReadKey();
                     Console.ResetColor();
                     continue;
-
-                }
+                }   
 
 
                 foreach (var languageName in languages)
                 {
 
-                    if (languageName.Language1 == namelanguage || languageName.CharLanguage == charlanguage)
+                    if (languageName.Language1 == namelanguage || languageName.CharLanguage.ToString() == charlanguage.ToString())
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\n\nThis language or index are already exist\nCLICK ENTER TO CONTINUE");
@@ -106,14 +102,13 @@ namespace LanguageApp
                     }
                 }
 
-                string copyNameChar = nameChar.ToString();
-
-                if(!Directory.Exists(Path.Combine(systemOp,copyNameChar)))
+                if(!Directory.Exists(Path.Combine(systemOp,charlanguage)))
                 {
-                    Directory.CreateDirectory(Path.Combine(systemOp, copyNameChar));
+                    Directory.CreateDirectory(Path.Combine(systemOp, charlanguage));
                 }
 
-                Language k1 = new Language(nameLanguage, nameChar);
+                char.TryParse(charlanguage, out char charlanguage1);
+                Language k1 = new Language(nameLanguage, charlanguage1);
                 languages.Add(k1);
                 end = true;
             } while (end == false);

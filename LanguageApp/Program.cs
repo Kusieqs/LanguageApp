@@ -24,8 +24,9 @@ internal class Program
         OverridingLanguages(systemOp, ref Languages);
 
         WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
-
-        Language actualLanguage = new Language(actualData[0], actualData[1]);
+        char.TryParse(actualData[1], out char charLanguage);
+        Enum.TryParse(actualData[0], out LanguageName languageName);
+        Language actualLanguage = new Language(languageName, charLanguage);
 
         if (firstTimeBool)
         {
@@ -114,7 +115,7 @@ internal class Program
             systemOp = Path.Combine(systemOp, "LanguageApp");
             Directory.CreateDirectory(systemOp);
 
-            Language l1 = new Language(LanguageName.English, CharLanguage.E);
+            Language l1 = new Language(LanguageName.English, 'E');
             languages.Add(l1);
 
             string jsonLanguages = JsonConvert.SerializeObject(languages);
