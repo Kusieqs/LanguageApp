@@ -1,4 +1,7 @@
-<h1 Language Learning Console Application />
+
+<h1 align="center" LanguageApp />
+
+<h2 Language Learning Console Application />
 This is my first console application designed to facilitate language learning through interactive exercises and managing study materials. Please note that this project is currently undergoing enhancements and scaling.
 
 <h2 Features />
