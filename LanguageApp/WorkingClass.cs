@@ -16,7 +16,7 @@ namespace LanguageApp
             do
             {
                 Console.Clear();
-                Console.WriteLine("Choose one of the language (If you want to add a new language, choose 0)\n"); 
+                Console.WriteLine("Choose one of the language (If you want to add a new language, choose + or 0 to exit)\n"); 
                 foreach (var ChoosingLangWrite in languages)
                 {
                     Console.WriteLine($"{ChoosingLangWrite.CharLanguage} - {ChoosingLangWrite.Language1}");
@@ -26,13 +26,18 @@ namespace LanguageApp
                 ConsoleKeyInfo result = new ConsoleKeyInfo();
                 result = Console.ReadKey();
 
-                if (result.KeyChar == '0')
+                if (result.KeyChar == '+')
                 {
                     WhichLanguageNewLanguage(returnChar, returnLanguage, ref languages, systemOp);
 
                     string json = JsonConvert.SerializeObject(languages);
                     File.WriteAllText(Path.Combine(systemOp, "Languages.json"), json);
                 }
+                else if(result.KeyChar == '0')
+                {
+                    Environment.Exit(0);
+                }
+
                 else
                 {
                     foreach (var StringAndChar in languages)
@@ -212,13 +217,12 @@ namespace LanguageApp
 
                 Console.Clear();
                 WordDescription w1 = new WordDescription(word, wordInYourLanguage, categoryName, language, unit, 0);
-                string json = File.ReadAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"));
                 string jsonFile;
 
-                if (!string.IsNullOrEmpty(json))
+                if (!string.IsNullOrEmpty(File.ReadAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"))))
                 {
                     List<WordDescription> mainList = new List<WordDescription>();
-                    mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
+                    mainList = JsonConvert.DeserializeObject<List<WordDescription>>(File.ReadAllText(Path.Combine(systemOp, lanChar, unit, category + ".json")));
                     mainList.Add(w1);
                     jsonFile = JsonConvert.SerializeObject(mainList);
                     File.WriteAllText(Path.Combine(systemOp, lanChar, unit, category + ".json"), jsonFile);

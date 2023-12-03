@@ -14,19 +14,31 @@ internal class Program
 
         string systemData = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string systemOp = Path.Combine(systemData, "Desktop");
-
         string unitName;
         string[] actualData = new string[2];
         #endregion
-
+        Language actualLanguage = new Language();
         FirstTime(ref systemOp, ref firstTimeBool, ref Languages); 
 
         OverridingLanguages(systemOp, ref Languages);
-
+        if (firstTimeBool)
+        {
+            actualLanguage= new Language(LanguageName.English.ToString(), 'E');
+            Console.Clear();
+            Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future (English)!");
+            Thread.Sleep(2600);
+            unitName = "Unit1";
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine("Words:\n\n");
+                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, "E");
+            }
+        }
+        firstTimeBool = false;
         WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
         char.TryParse(actualData[1], out char charLanguage);
         Enum.TryParse(actualData[0], out LanguageName languageName);
-        Language actualLanguage = new Language(languageName, charLanguage);
+        actualLanguage = new Language(languageName, charLanguage);
 
         if (firstTimeBool)
         {
