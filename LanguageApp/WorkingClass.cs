@@ -373,7 +373,48 @@ namespace LanguageApp
 
             throw new FormatException("Error with choosing category");
         }
-
+        public static void DownWritingFile(string systemOp,string language,string unit)
+        {
+            do
+            {
+                string newFile = systemOp;
+                Console.Clear();
+                Console.Write("Write name of file (0 to exit): ");
+                string fileName = Console.ReadLine();
+                if (fileName == "0")
+                    return;
+                else if (fileName == "")
+                    continue;
+                else if (File.Exists(Path.Combine(systemOp, fileName + ".json")))
+                    continue;
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Choose one of category W/E/D or 0 to write all Unit");
+                    ConsoleKeyInfo choose = new ConsoleKeyInfo();
+                    choose = Console.ReadKey();
+                    switch (choose.Key.ToString().ToUpper())
+                    {
+                        case "W":
+                            systemOp = Path.Combine(systemOp,language,unit,"W");
+                            break;
+                        case "E":
+                            systemOp = Path.Combine(systemOp, language, unit, "E");
+                            break;
+                        case "D":
+                            systemOp = Path.Combine(systemOp, language, unit, "D");
+                            break;
+                        case "0":
+                            //?
+                            break;
+                        default:
+                            break;
+                    }
+                    File.WriteAllText(Path.Combine(newFile, fileName + ".json"), File.ReadAllText(systemOp+".json"));
+                    // zapisywanie do language folderu/ sprawdzic jak zapisac jeden duzy plik
+                }
+            } while(true);
+        }
 
     }
 }
