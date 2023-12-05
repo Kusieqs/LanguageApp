@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Xml.Serialization;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LanguageApp
 {
@@ -375,9 +377,10 @@ namespace LanguageApp
         }
         public static void DownWritingFile(string systemOp,string language,string unit)
         {
+            List<WordDescription> words = new List<WordDescription>();
+            string[] pathsUnit = new string[] { Path.Combine(systemOp, language, unit, "W") ,Path.Combine(systemOp, language, unit, "E"), Path.Combine(systemOp, language, unit, "D") };
             do
             {
-                string newFile = systemOp;
                 Console.Clear();
                 Console.Write("Write name of file (0 to exit): ");
                 string fileName = Console.ReadLine();
@@ -390,30 +393,69 @@ namespace LanguageApp
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("Choose one of category W/E/D or 0 to write all Unit");
+                    Console.Write("Choose one of category W/E/D or 0 to write down all Unit: ");
                     ConsoleKeyInfo choose = new ConsoleKeyInfo();
                     choose = Console.ReadKey();
-                    switch (choose.Key.ToString().ToUpper())
+                    switch (choose.KeyChar)
                     {
-                        case "W":
-                            systemOp = Path.Combine(systemOp,language,unit,"W");
+                        case 'W':
+                            systemOp = pathsUnit[0];
                             break;
-                        case "E":
-                            systemOp = Path.Combine(systemOp, language, unit, "E");
+                        case 'E':
+                            systemOp = pathsUnit[1];
                             break;
-                        case "D":
-                            systemOp = Path.Combine(systemOp, language, unit, "D");
+                        case 'D':
+                            systemOp = pathsUnit[2];
                             break;
-                        case "0":
-                            //?
+                        case '0':
+                            foreach (var paths in pathsUnit)
+                            {
+                                string jsonContent = File.ReadAllText(paths + ".json");
+                                List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
+                                if (!string.IsNullOrEmpty(jsonContent))
+                                {
+                                    words.AddRange(listObject);
+                                }
+                            }
                             break;
                         default:
-                            break;
+                            continue;
                     }
-                    File.WriteAllText(Path.Combine(newFile, fileName + ".json"), File.ReadAllText(systemOp+".json"));
-                    // zapisywanie do language folderu/ sprawdzic jak zapisac jeden duzy plik
+
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                    if (choose.KeyChar == '0')
+                    { 
+                        File.WriteAllText(Path.Combine(path, fileName + ".json"), JsonConvert.SerializeObject(words));
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\n\nFile has been created\nClick enter to continue");
+                        Console.ReadKey();
+                        Console.ResetColor();
+                        break;
+                    } 
+                    else if(File.Exists(Path.Combine(path, fileName + ".json")))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n\nFile is existing\nClick enter to continue");
+                        Console.ReadKey();
+                        Console.ResetColor();
+                        continue;
+                    }
+                    else
+                    {
+                        File.WriteAllText(Path.Combine(path, fileName + ".json"), File.ReadAllText(systemOp + ".json"));
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\n\nFile has been created\nClick enter to continue");
+                        Console.ReadKey();
+                        Console.ResetColor();
+                        break;
+                    }
                 }
             } while(true);
+        } // Writing down file
+        public static void ReadingFile()
+        {
+
         }
 
     }
