@@ -454,8 +454,84 @@ namespace LanguageApp
         } // Writing down file
         public static void ReadingFile(string systemOp,string language,string unit)
         {
+
             do
             {
+                Console.Clear();
+                Console.Write("Write path of file to add (0 to exit): ");
+                string path = Console.ReadLine();
+                if (path == "0")
+                    return;
+                else if (File.Exists(path))
+                {
+                    List<WordDescription> wordDescriptions = new List<WordDescription>();
+                    string json = File.ReadAllText(path);
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        try
+                        {
+                            bool acceptList = true;
+                            wordDescriptions = JsonConvert.DeserializeObject<List<WordDescription>>(json);
+                            do
+                            {
+                                acceptList = true;
+                                Console.Write("Choose category where list should be add W/E/D (0 to exit): ");
+                                ConsoleKeyInfo choose = new ConsoleKeyInfo();
+                                choose = Console.ReadKey();
+                                switch (choose.KeyChar.ToString().ToUpper())
+                                {
+                                    case "W":
+                                        string jsonContent = File.ReadAllText(Path.Combine(systemOp, language, unit, "W.json"));
+                                        List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
+                                        listObject.AddRange(wordDescriptions);
+                                        File.WriteAllText(Path.Combine(systemOp, language, unit, "W.json"), JsonConvert.SerializeObject(listObject));
+                                        break;
+                                    case "E":
+                                        jsonContent = File.ReadAllText(Path.Combine(systemOp, language, unit, "E.json"));
+                                        listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
+                                        listObject.AddRange(wordDescriptions);
+                                        File.WriteAllText(Path.Combine(systemOp, language, unit, "E.json"), JsonConvert.SerializeObject(listObject));
+                                        break;
+                                    case "D":
+                                        jsonContent = File.ReadAllText(Path.Combine(systemOp, language, unit, "D.json"));
+                                        listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
+                                        listObject.AddRange(wordDescriptions);
+                                        File.WriteAllText(Path.Combine(systemOp, language, unit, "D.json"), JsonConvert.SerializeObject(listObject));
+                                        break;
+                                    case "0":
+                                        return;
+                                    default:
+                                        acceptList = false;
+                                }
+                            } while (!acceptList);
+                            
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("File has been added\nClick enter to continue");
+                        Console.ReadKey();
+                        Console.ResetColor();
+                        break;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\n\nFile is empty\nClick enter to continue");
+                        Console.ReadKey();
+                        Console.ResetColor();
+                        break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("File doesn't exist");
+                    Console.ReadKey();
+                    continue;
+                }
 
             } while (true); 
         }
