@@ -194,7 +194,7 @@ namespace LanguageApp
             bool correct = false;
 
             WordWriting(out word, out wordInYourLanguage);
-            category = Category(out categoryName);
+            category = Category(out categoryName,word,wordInYourLanguage);
             do
             {
                 Console.Clear();
@@ -330,29 +330,30 @@ namespace LanguageApp
         }// List of all words
         public static void WordWriting(out string word, out string wordInYourLanguage) /// Entering vocabulary and vocabulary data in your language
         {
-            Console.Clear();
-            Console.Write($"Write a word in another language:    ");
             do
             {
+                Console.Clear();
+                Console.Write($"Write a word in another language:    ");
                 word = Console.ReadLine();
-
             } while (word.Length == 0);
-
-            Console.Write($"\n\nWrite a word in your language:    ");
             do
             {
+                Console.Clear();
+                Console.Write($"Write a word in another language:    " + word);
+                Console.Write($"\n\nWrite a word in your language:    ");
                 wordInYourLanguage = Console.ReadLine();
-
             } while (wordInYourLanguage.Length == 0);
 
 
         }// Entering data of word
-        public static string Category(out CategoryType categoryName) // Choosing word category
+        public static string Category(out CategoryType categoryName,string word, string wordInYourLanguage) // Choosing word category
         {
             bool correctChoosing = false;
             do
             {
-
+                Console.Clear();
+                Console.Write($"Write a word in another language:    " + word);
+                Console.Write($"\n\nWrite a word in your language:    " + wordInYourLanguage);
                 Console.WriteLine("\n\nChoose a category of your word: Word,Expression,Diffrent (W/E/D)");
                 ConsoleKeyInfo choose = new ConsoleKeyInfo();
                 choose = Console.ReadKey();
@@ -372,8 +373,6 @@ namespace LanguageApp
                         break;
                 }
             } while (correctChoosing == false);
-
-            throw new FormatException("Error with choosing category");
         }
         public static void DownWritingFile(string systemOp,string language,string unit)
         {
@@ -453,9 +452,12 @@ namespace LanguageApp
                 }
             } while(true);
         } // Writing down file
-        public static void ReadingFile()
+        public static void ReadingFile(string systemOp,string language,string unit)
         {
+            do
+            {
 
+            } while (true); 
         }
 
     }
