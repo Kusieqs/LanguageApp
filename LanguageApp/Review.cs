@@ -125,6 +125,7 @@ namespace LanguageApp
             Random random = new Random();
             List<WordDescription> copyList = mainList.Where(x => x.Mistakes >= minMistake).ToList();
 
+            bool goingToExit;
             bool wordInYourLanguage = false, wordInAnotherLanguage = false, mix = false, exit = false;
             QuestionAboutMode(ref wordInYourLanguage, ref wordInAnotherLanguage, ref mix, ref exit);
 
@@ -141,10 +142,8 @@ namespace LanguageApp
                 {
                     do
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
-                        Console.Write(words.WordInYourLanguage.Trim() + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
+                        goingToExit = false;
+                        attempt = AnswerWord(ref goingToExit, words.WordInYourLanguage, howManyAttempts);
                         if (attempt =="+")
                         {
                             return;
@@ -153,20 +152,9 @@ namespace LanguageApp
                         if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
                             howManyAttempts -= 1;
-                            mistakes++;
+                            UnCorrectAnswer(howManyAttempts, ref correctAnswer, words.Word);
                             words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            if (howManyAttempts == 0)
-                            {
-                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\nClick Enter to continue");
-                                correctAnswer = true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            }
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            mistakes++;
                         }
                         else
                         {
@@ -179,10 +167,8 @@ namespace LanguageApp
                 {
                     do
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
-                        Console.Write(words.Word.Trim() + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
+                        goingToExit = false;
+                        attempt = AnswerWord(ref goingToExit, words.Word, howManyAttempts);
                         if(attempt == "+")
                         {
                             return;
@@ -191,20 +177,9 @@ namespace LanguageApp
                         if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
                             howManyAttempts -= 1;
-                            mistakes++;
+                            UnCorrectAnswer(howManyAttempts, ref correctAnswer, words.WordInYourLanguage);
                             words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            if (howManyAttempts == 0)
-                            {
-                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
-                                correctAnswer = true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            }
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            mistakes++;
                         }
                         else
                         {
@@ -226,6 +201,7 @@ namespace LanguageApp
             if (exit)
                 return;
 
+            bool goingToExit;
             string attempt;
             bool correctAnswer = false;
             int  mistakes = 0;
@@ -245,10 +221,8 @@ namespace LanguageApp
                 {
                     do
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
-                        Console.Write(mainList[randomWord].WordInYourLanguage.Trim() + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
+                        goingToExit = false;
+                        attempt = AnswerWord(ref goingToExit, mainList[randomWord].WordInYourLanguage, howManyAttempts);
                         if (attempt == "+")
                         {
                             return;
@@ -257,20 +231,10 @@ namespace LanguageApp
                         if (mainList[randomWord].Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
 
-                            mainList[randomWord].Mistakes += 1;
                             howManyAttempts -= 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            if (howManyAttempts == 0)
-                            {
-                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].Word.Trim()}\nClick Enter to continue");
-                                correctAnswer = true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            }
-                            Console.ResetColor();
-                            Console.ReadKey();
+                            UnCorrectAnswer(howManyAttempts, ref correctAnswer, mainList[randomWord].Word);
+                            mistakes++;
+                            mainList[randomWord].Mistakes += 1;
                         }
                         else
                         {
@@ -284,10 +248,8 @@ namespace LanguageApp
                 {
                     do
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
-                        Console.Write(mainList[randomWord].Word.Trim() + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
+                        goingToExit = false;
+                        attempt = AnswerWord(ref goingToExit, mainList[randomWord].Word, howManyAttempts);
                         if(attempt == "+")
                         {
                             return;
@@ -296,20 +258,9 @@ namespace LanguageApp
                         if (mainList[randomWord].WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
                             howManyAttempts -= 1;
+                            UnCorrectAnswer(howManyAttempts, ref correctAnswer, mainList[randomWord].WordInYourLanguage);
                             mistakes++;
                             mainList[randomWord].Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            if (howManyAttempts == 0)
-                            {
-                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {mainList[randomWord].WordInYourLanguage.Trim()}\nClick Enter to continue");
-                                correctAnswer = true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            }
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
                         else
                         {
@@ -333,6 +284,7 @@ namespace LanguageApp
             if (exit)
                 return;
 
+            bool goingToExit;
             string attempt;
             int mistakes = 0;
             bool correctAnswer = false;
@@ -351,10 +303,9 @@ namespace LanguageApp
                 {
                     do
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
-                        Console.Write(words.WordInYourLanguage.Trim() + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
+                        goingToExit = false;
+                        attempt = AnswerWord(ref goingToExit, words.Word, howManyAttempts);
+
                         if (attempt == "+")
                         {
                             return;
@@ -363,20 +314,9 @@ namespace LanguageApp
                         if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
                             howManyAttempts -= 1;
+                            UnCorrectAnswer(howManyAttempts, ref correctAnswer, words.Word);
                             mistakes++;
                             words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            if (howManyAttempts == 0)
-                            {
-                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.Word.Trim()}\nClick Enter to continue");
-                                correctAnswer = true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            }
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
                         else
                         {
@@ -388,10 +328,9 @@ namespace LanguageApp
                 {
                     do
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
-                        Console.Write(words.Word.Trim() + ": ".PadLeft(5));
-                        attempt = Console.ReadLine();
+                        goingToExit = false;
+                        attempt = AnswerWord(ref goingToExit, words.WordInYourLanguage, howManyAttempts);
+
                         if(attempt == "+")
                         {
                             return;
@@ -400,20 +339,9 @@ namespace LanguageApp
                         if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
                             howManyAttempts -= 1;
+                            UnCorrectAnswer(howManyAttempts, ref correctAnswer, words.WordInYourLanguage);
                             mistakes++;
                             words.Mistakes += 1;
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            if (howManyAttempts == 0)
-                            {
-                                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {words.WordInYourLanguage.Trim()}\nClick Enter to continue");
-                                correctAnswer = true;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
-                            }
-                            Console.ResetColor();
-                            Console.ReadKey();
                         }
                         else
                         {
@@ -482,6 +410,34 @@ namespace LanguageApp
                 }
             } while (true);
         }// choosing mode of review
+        private static void UnCorrectAnswer(int howManyAttempts, ref bool correctAnswer, string word)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            if (howManyAttempts == 0)
+            {
+                Console.WriteLine($"\n\nWRONG ANSWER\nCorrect answer: {word}\nClick Enter to continue");
+                correctAnswer = true;
+            }
+            else
+            {
+                Console.WriteLine("\n\nWRONG ANSWER\nClick Enter to continue");
+            }
+            Console.ResetColor();
+            Console.ReadKey();
+        }
+        private string AnswerWord(ref bool exit, string word, int howManyAttempts)
+        {
+            Console.Clear();
+            Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
+            Console.Write(word + ": ".PadLeft(5));
+            string attempt = Console.ReadLine();    
+            if (attempt == "+")
+            {
+                exit = true;
+                return "";
+            }
+            return attempt; 
+        }
 
     }
 }
