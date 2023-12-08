@@ -58,7 +58,7 @@ internal class Program
         do
         {
             Console.Clear();
-            Console.WriteLine($"Choose on of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Down writing file to json\n7.Read json file\n8.Close\n\n\nLanguage: {actualData[0]}\nUnit: {unitName}"); ///menu
+            Console.WriteLine($"Choose one of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Down writing file to json\n7.Read json file\n8.Close\n\n\nLanguage: {actualData[0]}\nUnit: {unitName}"); ///menu
 
             ConsoleKeyInfo result = new ConsoleKeyInfo();
             result = Console.ReadKey();
@@ -113,7 +113,8 @@ internal class Program
                     WorkingClass.DownWritingFile(systemOp, actualData[1],unitName);
                     break;
                 case '7':
-                    WorkingClass.ReadingFile(systemOp,actualData[1],unitName)
+                    WorkingClass.ReadingFile(systemOp, actualData[1], unitName);
+                    break;
                 case '8':
                     end = false;
                     break;

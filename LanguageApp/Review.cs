@@ -7,6 +7,7 @@ namespace LanguageApp
     {
         public static void MainReview(string language, string systemOp, string unit)
         {
+            string category = "";
             ConsoleKeyInfo key;
             int max = 0, min = 0;
             bool legendary = false, correctAnswer = false, mistakeLvl = false;
@@ -17,9 +18,10 @@ namespace LanguageApp
                 Console.Clear();
                 Console.WriteLine("Do you want review expresion or words or diffrent? W/E/D (Write 0 to exit)");
                 key = Console.ReadKey();
+                category = key.KeyChar.ToString().ToUpper();
                 Console.Clear();
 
-                if (key.KeyChar == 'W' || key.KeyChar == 'E' || key.KeyChar == 'D')
+                if (category == "W" || category == "E" || category == "D")
                 {
                     Console.Write("Choose level: \n1.Easy (10 exercises)\n\n2.Medium (10-30 exercises)\n\n3.Hard (30-50 exercises)\n\n4.Legendary (All of words)\n\n5.Mistakes Level\n\n0.Exit\n\n\nNumber: ");
 
@@ -50,11 +52,13 @@ namespace LanguageApp
                 }
                 else if (key.KeyChar == '0')
                     return;
+                else
+                    continue;
 
             } while (!correctAnswer);
 
             List<WordDescription> mainList = new List<WordDescription>();
-            string json = File.ReadAllText(Path.Combine(systemOp, language, unit, key.KeyChar.ToString()+".json"));
+            string json = File.ReadAllText(Path.Combine(systemOp, language, unit, category+".json"));
 
             if (!string.IsNullOrEmpty(json))
                 mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
@@ -63,7 +67,6 @@ namespace LanguageApp
 
             if (mainList.Count > 0)
             {
-                Console.ReadKey();
 
                 if (legendary)
                 {
@@ -79,7 +82,7 @@ namespace LanguageApp
                 }
 
                 string jsonWriter = JsonConvert.SerializeObject(mainList);
-                File.WriteAllText(Path.Combine(systemOp, language, unit, key.KeyChar.ToString()+".json"), jsonWriter);
+                File.WriteAllText(Path.Combine(systemOp, language, unit, category+".json"), jsonWriter);
             }
             else
             {
@@ -139,9 +142,13 @@ namespace LanguageApp
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
                         Console.Write(words.WordInYourLanguage.Trim() + ": ".PadLeft(5));
                         attempt = Console.ReadLine();
+                        if (attempt =="+")
+                        {
+                            return;
+                        }
 
                         if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -173,9 +180,13 @@ namespace LanguageApp
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
                         Console.Write(words.Word.Trim() + ": ".PadLeft(5));
                         attempt = Console.ReadLine();
+                        if(attempt == "+")
+                        {
+                            return;
+                        }
 
                         if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -235,9 +246,13 @@ namespace LanguageApp
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
                         Console.Write(mainList[randomWord].WordInYourLanguage.Trim() + ": ".PadLeft(5));
                         attempt = Console.ReadLine();
+                        if (attempt == "+")
+                        {
+                            return;
+                        }
 
                         if (mainList[randomWord].Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -270,9 +285,13 @@ namespace LanguageApp
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
                         Console.Write(mainList[randomWord].Word.Trim() + ": ".PadLeft(5));
                         attempt = Console.ReadLine();
+                        if(attempt == "+")
+                        {
+                            return;
+                        }
 
                         if (mainList[randomWord].WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -333,9 +352,13 @@ namespace LanguageApp
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
                         Console.Write(words.WordInYourLanguage.Trim() + ": ".PadLeft(5));
                         attempt = Console.ReadLine();
+                        if (attempt == "+")
+                        {
+                            return;
+                        }
 
                         if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -359,19 +382,20 @@ namespace LanguageApp
                         {
                             CorrectAnswer(ref correctAnswer);
                         }
-
-
                     } while (!correctAnswer);
-
                 }
                 else if(wordInYourLanguage || whichOne == 1)
                 {
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine($"Attempts: {howManyAttempts}");
+                        Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
                         Console.Write(words.Word.Trim() + ": ".PadLeft(5));
                         attempt = Console.ReadLine();
+                        if(attempt == "+")
+                        {
+                            return;
+                        }
 
                         if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -438,8 +462,8 @@ namespace LanguageApp
             do
             {
                 Console.Clear();
-                Console.WriteLine("Choose one of the options\n\n\n");
-                Console.Write($"1.You have to write word in your language\n\n2.You have to write word in another language\n\n3.Mix with words\n\n0. Exit\nNumber: ");
+                Console.WriteLine("Choose one of the options:\n\n\n");
+                Console.Write($"1 .You have to write word in your language\n\n2. You have to write word in another language\n\n3. Mix with words\n\n0. Exit\n\nNumber: ");
                 key = Console.ReadLine();
                 switch (key)
                 {

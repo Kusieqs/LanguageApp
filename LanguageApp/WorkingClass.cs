@@ -284,7 +284,7 @@ namespace LanguageApp
                 int x = 1;
                 if (mainList.Count > 0)
                 {
-                    Console.WriteLine("Nr  \t Mistakes\t\tWord\t\t\tWord in your language\n");
+                    Console.WriteLine("Nr  \t Mistakes\t\tWord\t\t\t\t\t\tWord in your language\n");
                     foreach (var word in mainList)
                     {
                         Console.SetCursorPosition(0, x * 2);
@@ -293,7 +293,7 @@ namespace LanguageApp
                         Console.Write(word.Mistakes);
                         Console.SetCursorPosition(32, x * 2);
                         Console.Write(word.Word);
-                        Console.SetCursorPosition(56, x * 2);
+                        Console.SetCursorPosition(80, x * 2);
                         Console.Write(word.WordInYourLanguage);
                         ++x;
                     }
@@ -348,7 +348,6 @@ namespace LanguageApp
         }// Entering data of word
         public static string Category(out CategoryType categoryName,string word, string wordInYourLanguage) // Choosing word category
         {
-            bool correctChoosing = false;
             do
             {
                 Console.Clear();
@@ -358,7 +357,7 @@ namespace LanguageApp
                 ConsoleKeyInfo choose = new ConsoleKeyInfo();
                 choose = Console.ReadKey();
 
-                switch (choose.Key.ToString().ToUpper())
+                switch (choose.KeyChar.ToString().ToUpper())
                 {
                     case "W":
                         categoryName = CategoryType.Word;
@@ -372,7 +371,7 @@ namespace LanguageApp
                     default:
                         break;
                 }
-            } while (correctChoosing == false);
+            } while (true);
         }
         public static void DownWritingFile(string systemOp,string language,string unit)
         {
@@ -502,6 +501,7 @@ namespace LanguageApp
                                         return;
                                     default:
                                         acceptList = false;
+                                        break;
                                 }
                             } while (!acceptList);
                             
