@@ -34,26 +34,20 @@ internal class Program
             }
         }
         firstTimeBool = false;
-        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
-        char.TryParse(actualData[1], out char charLanguage);
-        Enum.TryParse(actualData[0], out LanguageName languageName);
-        actualLanguage = new Language(languageName, charLanguage);
-
-        if (firstTimeBool)
+        do
         {
-            Console.Clear();
-            Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future!");
-            Thread.Sleep(1600);
-            unitName = "Unit1";
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine("Words:\n\n");
-                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
-            }
-        }
-        firstTimeBool = false;
+            bool correctUnit = true;
+            WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
+            char.TryParse(actualData[1], out char charLanguage);
+            Enum.TryParse(actualData[0], out LanguageName languageName);
+            actualLanguage = new Language(languageName, charLanguage);
+            WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName, ref correctUnit);
+            if (!correctUnit)
+                continue;
+            break;
 
-        WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName);
+        } while (true);
+
 
         do
         {
@@ -105,8 +99,15 @@ internal class Program
                     Console.Clear();
                     Languages.Clear();
                     OverridingLanguages(systemOp, ref Languages);
-                    WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool,ref actualData);
-                    WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName);
+                    do
+                    {
+                        bool correctUnit = true;
+                        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
+                        WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName,ref correctUnit);
+                        if (!correctUnit)
+                            continue;
+                        break;
+                    } while(true);
                     break;
 
                 case '6':

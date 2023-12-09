@@ -121,7 +121,7 @@ namespace LanguageApp
             } while (end == false);
 
         }// Adding new language to list
-        public static void ChoosingUnit(string systemOp, string language, out string unitName)
+        public static void ChoosingUnit(string systemOp, string language, out string unitName, ref bool correctUnitBool)
         {
             unitName = string.Empty; 
             bool unitBool = false;
@@ -129,7 +129,7 @@ namespace LanguageApp
             {
                 List<string> foldersNames = new List<string>();
                 Console.Clear();
-                Console.WriteLine("If you want to create new Unit write number 0 or choose one of this: \n\n\nUnits:\n");
+                Console.WriteLine("If you want to create new Unit write 0 or choose one of this: \n\n\nUnits:\n\n-1.\tExit\n0.\tNew unit\n\n");
                 string[] Folders = Directory.GetDirectories(Path.Combine(systemOp, language[0].ToString()));
                 foreach (var direct in Folders)
                 {
@@ -137,17 +137,22 @@ namespace LanguageApp
                 }
                 for (int i = 0; i < foldersNames.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1}. {foldersNames[i]}");
+                    Console.WriteLine($"{i + 1}.\t{foldersNames[i]}");
                 }
 
                 Console.Write("\n\nNumber: ");
                 bool unitChoosing = int.TryParse(Console.ReadLine(), out int correctUnit);
                 if (unitChoosing == false)
                     continue;
-                else if (correctUnit > foldersNames.Count)
+                else if (correctUnit > foldersNames.Count || correctUnit < -1)
                     continue;
 
-                if (correctUnit == 0)
+                if (correctUnit == -1)
+                {
+                    correctUnitBool = false;
+                    return;
+                }
+                else if (correctUnit == 0)
                 {
                     Console.Clear();
                     Console.Write("Write a new name of Unit: ");
@@ -456,6 +461,7 @@ namespace LanguageApp
 
             do
             {
+                string jsonContent = "";
                 Console.Clear();
                 Console.Write("Write path of file to add (0 to exit): ");
                 string path = Console.ReadLine();
@@ -480,22 +486,13 @@ namespace LanguageApp
                                 switch (choose.KeyChar.ToString().ToUpper())
                                 {
                                     case "W":
-                                        string jsonContent = File.ReadAllText(Path.Combine(systemOp, language, unit, "W.json"));
-                                        List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
-                                        listObject.AddRange(wordDescriptions);
-                                        File.WriteAllText(Path.Combine(systemOp, language, unit, "W.json"), JsonConvert.SerializeObject(listObject));
+                                        jsonContent = "W.json";
                                         break;
                                     case "E":
-                                        jsonContent = File.ReadAllText(Path.Combine(systemOp, language, unit, "E.json"));
-                                        listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
-                                        listObject.AddRange(wordDescriptions);
-                                        File.WriteAllText(Path.Combine(systemOp, language, unit, "E.json"), JsonConvert.SerializeObject(listObject));
+                                        jsonContent = "E.json";
                                         break;
                                     case "D":
-                                        jsonContent = File.ReadAllText(Path.Combine(systemOp, language, unit, "D.json"));
-                                        listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
-                                        listObject.AddRange(wordDescriptions);
-                                        File.WriteAllText(Path.Combine(systemOp, language, unit, "D.json"), JsonConvert.SerializeObject(listObject));
+                                        jsonContent = "D.json";
                                         break;
                                     case "0":
                                         return;
@@ -503,11 +500,24 @@ namespace LanguageApp
                                         acceptList = false;
                                         break;
                                 }
+                                string jsonRead = File.ReadAllText(Path.Combine(systemOp,language,unit,jsonContent));
+                                if(string.IsNullOrEmpty(jsonRead) && acceptList)
+                                {
+                                    File.WriteAllText(Path.Combine(systemOp, language, unit, jsonContent), JsonConvert.SerializeObject(wordDescriptions));
+                                }
+                                else if(acceptList)
+                                {
+                                    string jsonRead2 = File.ReadAllText(Path.Combine(systemOp, language, unit, jsonContent));
+                                    List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonRead2);
+                                    listObject.AddRange(wordDescriptions);
+                                    File.WriteAllText(Path.Combine(systemOp, language, unit, "W.json"), JsonConvert.SerializeObject(listObject));
+                                }
                             } while (!acceptList);
                             
                         }
-                        catch
+                        catch (Exception e)
                         {
+                            Console.WriteLine(e);
                             continue;
                         }
                         Console.Clear();

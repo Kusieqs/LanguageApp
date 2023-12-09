@@ -425,7 +425,7 @@ namespace LanguageApp
             Console.ResetColor();
             Console.ReadKey();
         }
-        private string AnswerWord(ref bool exit, string word, int howManyAttempts)
+        private static string AnswerWord(ref bool exit, string word, int howManyAttempts)
         {
             Console.Clear();
             Console.WriteLine($"Attempts: {howManyAttempts}\nIf you want to exit write +\n");
