@@ -144,10 +144,8 @@ namespace LanguageApp
                     {
                         goingToExit = false;
                         attempt = AnswerWord(ref goingToExit, words.WordInYourLanguage, howManyAttempts);
-                        if (attempt =="+")
-                        {
+                        if (goingToExit)
                             return;
-                        }
 
                         if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -169,10 +167,8 @@ namespace LanguageApp
                     {
                         goingToExit = false;
                         attempt = AnswerWord(ref goingToExit, words.Word, howManyAttempts);
-                        if(attempt == "+")
-                        {
+                        if (goingToExit)
                             return;
-                        }
 
                         if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -223,10 +219,8 @@ namespace LanguageApp
                     {
                         goingToExit = false;
                         attempt = AnswerWord(ref goingToExit, mainList[randomWord].WordInYourLanguage, howManyAttempts);
-                        if (attempt == "+")
-                        {
+                        if(goingToExit) 
                             return;
-                        }
 
                         if (mainList[randomWord].Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -250,10 +244,8 @@ namespace LanguageApp
                     {
                         goingToExit = false;
                         attempt = AnswerWord(ref goingToExit, mainList[randomWord].Word, howManyAttempts);
-                        if(attempt == "+")
-                        {
+                        if (goingToExit)
                             return;
-                        }
 
                         if (mainList[randomWord].WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -304,12 +296,10 @@ namespace LanguageApp
                     do
                     {
                         goingToExit = false;
-                        attempt = AnswerWord(ref goingToExit, words.Word, howManyAttempts);
+                        attempt = AnswerWord(ref goingToExit, words.WordInYourLanguage, howManyAttempts);
 
-                        if (attempt == "+")
-                        {
+                        if (goingToExit)
                             return;
-                        }
 
                         if (words.Word.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -329,12 +319,10 @@ namespace LanguageApp
                     do
                     {
                         goingToExit = false;
-                        attempt = AnswerWord(ref goingToExit, words.WordInYourLanguage, howManyAttempts);
+                        attempt = AnswerWord(ref goingToExit, words.Word, howManyAttempts);
 
-                        if(attempt == "+")
-                        {
+                        if (goingToExit)
                             return;
-                        }
 
                         if (words.WordInYourLanguage.ToUpper().Trim() != attempt.ToUpper().Trim())
                         {
@@ -391,7 +379,7 @@ namespace LanguageApp
             {
                 Console.Clear();
                 Console.WriteLine("Choose one of the options:\n\n\n");
-                Console.Write($"1 .You have to write word in your language\n\n2. You have to write word in another language\n\n3. Mix with words\n\n0. Exit\n\nNumber: ");
+                Console.Write($"1.You have to write word in your language\n\n2. You have to write word in another language\n\n3. Mix with words\n\n0. Exit\n\nNumber: ");
                 key = Console.ReadLine();
                 switch (key)
                 {

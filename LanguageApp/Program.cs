@@ -65,28 +65,35 @@ internal class Program
                     break;
 
                 case '2':
-                    Console.Clear();
-                    Console.WriteLine("Write number of words which do you want to add. (Max 20 words)");
-                    Console.Write("\nNumber: ");
-                    bool correctNumber = int.TryParse(Console.ReadLine(), out int numberOfWords);
-                    if (correctNumber)
+                    do
                     {
-                        if (numberOfWords == 0 || numberOfWords < 0 || numberOfWords > 20)
+                        Console.Clear();
+                        Console.WriteLine("Write number of words which do you want to add or 0 to exit. (Max 20 words)");
+                        Console.Write("\nNumber: ");
+                        bool correctNumber = int.TryParse(Console.ReadLine(), out int numberOfWords);
+                        if (correctNumber)
                         {
+                            if (numberOfWords < 0 || numberOfWords > 20)
+                            {
+                                continue;
+                            }
+                            else if(numberOfWords == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                for (int i = 0; i < numberOfWords; i++)
+                                {
+                                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
+                                }
+                            }
                             break;
                         }
                         else
-                        {
-                            for (int i = 0; i < numberOfWords; i++)
-                            {
-                                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
-                            }
-                        }
-                        break;
-                    }
-                    else
-                        continue;
-
+                            continue;
+                    } while(true)
+                    break;
                 case '3':
                     Review.MainReview(actualData[1], systemOp, unitName);
                     break;

@@ -129,7 +129,7 @@ namespace LanguageApp
             {
                 List<string> foldersNames = new List<string>();
                 Console.Clear();
-                Console.WriteLine("If you want to create new Unit write 0 or choose one of this: \n\n\nUnits:\n\n-1.\tExit\n0.\tNew unit\n\n");
+                Console.WriteLine("If you want to create new Unit write 0 or choose one of this: \n\n\nUnits:\n\n-1.\tExit\n 0.\tNew unit\n\n");
                 string[] Folders = Directory.GetDirectories(Path.Combine(systemOp, language[0].ToString()));
                 foreach (var direct in Folders)
                 {
@@ -137,9 +137,10 @@ namespace LanguageApp
                 }
                 for (int i = 0; i < foldersNames.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1}.\t{foldersNames[i]}");
+                    Console.WriteLine($" {i + 1}.\t{foldersNames[i]}");
+                    
                 }
-
+                int maxUnit = foldersNames.Count;
                 Console.Write("\n\nNumber: ");
                 bool unitChoosing = int.TryParse(Console.ReadLine(), out int correctUnit);
                 if (unitChoosing == false)
@@ -154,10 +155,18 @@ namespace LanguageApp
                 }
                 else if (correctUnit == 0)
                 {
+                    maxUnit++;
                     Console.Clear();
+
+                    if(maxUnit > 999)
+                    {
+                        Console.WriteLine("You reach max value of units!");
+                        Console.ReadKey();
+                        continue;
+                    }
+
                     Console.Write("Write a new name of Unit: ");
                     string newUnit = Console.ReadLine();
-
                     string firstCharLanguage = language[0].ToString();
 
                     if (!Directory.Exists(Path.Combine(systemOp, firstCharLanguage,newUnit)))
@@ -197,9 +206,13 @@ namespace LanguageApp
             CategoryType categoryName;
             Console.Clear();
             bool correct = false;
-
-            WordWriting(out word, out wordInYourLanguage);
+            bool exit = false;
+            WordWriting(out word, out wordInYourLanguage,ref exit);
+            if(exit == true)
+                return;
             category = Category(out categoryName,word,wordInYourLanguage);
+            if (category == "-")
+                return;
             do
             {
                 Console.Clear();
@@ -333,20 +346,31 @@ namespace LanguageApp
 
             } while (!correctWordsList);
         }// List of all words
-        public static void WordWriting(out string word, out string wordInYourLanguage) /// Entering vocabulary and vocabulary data in your language
+        public static void WordWriting(out string word, out string wordInYourLanguage,ref bool exit) /// Entering vocabulary and vocabulary data in your language
         {
             do
             {
                 Console.Clear();
-                Console.Write($"Write a word in another language:    ");
+                Console.Write($"Write '-' to exit\n\nWrite a word in another language:    ");
                 word = Console.ReadLine();
+                if(word == "-")
+                {
+                    exit = true;
+                    wordInYourLanguage = null;
+                    return;
+                }
             } while (word.Length == 0);
             do
             {
                 Console.Clear();
-                Console.Write($"Write a word in another language:    " + word);
+                Console.Write($"Write '-' to exit\n\nWrite a word in another language:    " + word);
                 Console.Write($"\n\nWrite a word in your language:    ");
                 wordInYourLanguage = Console.ReadLine();
+                if (wordInYourLanguage == "-")
+                {
+                    exit = true;
+                    return;
+                }
             } while (wordInYourLanguage.Length == 0);
 
 
@@ -356,7 +380,7 @@ namespace LanguageApp
             do
             {
                 Console.Clear();
-                Console.Write($"Write a word in another language:    " + word);
+                Console.Write($"Write '-' to exit\n\nWrite a word in another language:    " + word);
                 Console.Write($"\n\nWrite a word in your language:    " + wordInYourLanguage);
                 Console.WriteLine("\n\nChoose a category of your word: Word,Expression,Diffrent (W/E/D)");
                 ConsoleKeyInfo choose = new ConsoleKeyInfo();
@@ -373,6 +397,9 @@ namespace LanguageApp
                     case "D":
                         categoryName = CategoryType.Diffrent;
                         return "D";
+                    case "-":
+                        categoryName = CategoryType.Nothing;
+                        return "-";
                     default:
                         break;
                 }

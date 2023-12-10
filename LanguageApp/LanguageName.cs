@@ -18,7 +18,9 @@ namespace LanguageApp
 	{
 		Word,
 		Expression,
-		Diffrent
+		Diffrent,
+		Nothing
+
 	}
 }
 
