@@ -6,48 +6,38 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        List<WordDescription> ListOfWords = new List<WordDescription>();
         List<Language> Languages = new List<Language>();
 
         #region Data Reading
-        bool firstTimeBool = false, end = true;
+        bool end = true;
 
         string systemData = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string systemOp = Path.Combine(systemData, "Desktop");
-
         string unitName;
         string[] actualData = new string[2];
         #endregion
-
-        FirstTime(ref systemOp, ref firstTimeBool, ref Languages); 
-
+        Language actualLanguage = new Language();
+        FirstTime(ref systemOp,ref Languages); 
         OverridingLanguages(systemOp, ref Languages);
-
-        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
-        char.TryParse(actualData[1], out char charLanguage);
-        Enum.TryParse(actualData[0], out LanguageName languageName);
-        Language actualLanguage = new Language(languageName, charLanguage);
-
-        if (firstTimeBool)
+        do
         {
-            Console.Clear();
-            Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future!");
-            Thread.Sleep(1600);
-            unitName = "Unit1";
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine("Words:\n\n");
-                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
-            }
-        }
-        firstTimeBool = false;
+            bool correctUnit = true;
+            WorkingClass.WhichLanguage(systemOp, ref Languages, ref actualData);
+            char.TryParse(actualData[1], out char charLanguage);
+            Enum.TryParse(actualData[0], out LanguageName languageName);
+            actualLanguage = new Language(languageName, charLanguage);
+            WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName, ref correctUnit);
+            if (!correctUnit)
+                continue;
+            break;
 
-        WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName);
+        } while (true);
+
 
         do
         {
             Console.Clear();
-            Console.WriteLine($"Choose on of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Close\n\n\nLanguage: {actualData[0]}\nUnit: {unitName}"); ///menu
+            Console.WriteLine($"Choose one of the options\n\n\n1.Add word\n2.Multi add word\n3.Review\n4.Check list\n5.Change language\n6.Down writing file to json\n7.Read json file\n8.Close\n\n\nLanguage: {actualData[0]}\nUnit: {unitName}"); ///menu
 
             ConsoleKeyInfo result = new ConsoleKeyInfo();
             result = Console.ReadKey();
@@ -60,28 +50,35 @@ internal class Program
                     break;
 
                 case '2':
-                    Console.Clear();
-                    Console.WriteLine("Write number of words which do you want to add. (Max 20 words)");
-                    Console.Write("\nNumber: ");
-                    bool correctNumber = int.TryParse(Console.ReadLine(), out int numberOfWords);
-                    if (correctNumber)
+                    do
                     {
-                        if (numberOfWords == 0 || numberOfWords < 0 || numberOfWords > 20)
+                        Console.Clear();
+                        Console.WriteLine("Write number of words which do you want to add or 0 to exit. (Max 20 words)");
+                        Console.Write("\nNumber: ");
+                        bool correctNumber = int.TryParse(Console.ReadLine(), out int numberOfWords);
+                        if (correctNumber)
                         {
+                            if (numberOfWords < 0 || numberOfWords > 20)
+                            {
+                                continue;
+                            }
+                            else if (numberOfWords == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                for (int i = 0; i < numberOfWords; i++)
+                                {
+                                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
+                                }
+                            }
                             break;
                         }
                         else
-                        {
-                            for (int i = 0; i < numberOfWords; i++)
-                            {
-                                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
-                            }
-                        }
-                        break;
-                    }
-                    else
-                        continue;
-
+                            continue;
+                    } while (true);
+                    break;
                 case '3':
                     Review.MainReview(actualData[1], systemOp, unitName);
                     break;
@@ -94,11 +91,24 @@ internal class Program
                     Console.Clear();
                     Languages.Clear();
                     OverridingLanguages(systemOp, ref Languages);
-                    WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool,ref actualData);
-                    WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName);
+                    do
+                    {
+                        bool correctUnit = true;
+                        WorkingClass.WhichLanguage(systemOp, ref Languages, ref actualData);
+                        WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName,ref correctUnit);
+                        if (!correctUnit)
+                            continue;
+                        break;
+                    } while(true);
                     break;
 
                 case '6':
+                    WorkingClass.DownWritingFile(systemOp, actualData[1],unitName);
+                    break;
+                case '7':
+                    WorkingClass.ReadingFile(systemOp, actualData[1], unitName);
+                    break;
+                case '8':
                     end = false;
                     break;
 
@@ -107,7 +117,7 @@ internal class Program
         } while (end); 
 
     }
-    public static void FirstTime(ref string systemOp, ref bool firstTimeBool, ref List<Language> languages)
+    public static void FirstTime(ref string systemOp, ref List<Language> languages)
     {
 
         if (!Directory.Exists(Path.Combine(systemOp, "LanguageApp"))) 
@@ -131,7 +141,6 @@ internal class Program
             File.WriteAllText(Path.Combine(systemOp, "E", "Unit1", "E.json"), test);
             File.WriteAllText(Path.Combine(systemOp, "E", "Unit1", "D.json"), test);
 
-            firstTimeBool = true;
         }
         else
         {
