@@ -520,7 +520,9 @@ namespace LanguageApp
                             string jsonRead = File.ReadAllText(Path.Combine(systemOp, language, unit, jsonContent));
                             if (string.IsNullOrEmpty(jsonRead))
                             {
-                                string serialized = JsonConvert.SerializeObject(word);
+                                List<WordDescription> mainlistObject = new List<WordDescription>();
+                                mainlistObject.Add(word);
+                                string serialized = JsonConvert.SerializeObject(mainlistObject);
                                 File.WriteAllText(Path.Combine(systemOp, language, unit, jsonContent), serialized);
                             }
                             else
@@ -535,8 +537,8 @@ namespace LanguageApp
                     }
                     catch (Exception e)
                     {
-                        
-                        continue;
+                        Console.WriteLine($"Error: {e.Message}");
+                        return;
                     }
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
