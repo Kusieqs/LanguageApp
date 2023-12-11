@@ -440,10 +440,10 @@ namespace LanguageApp
                         case '0':
                             foreach (var paths in pathsUnit)
                             {
-                                string jsonContent = File.ReadAllText(paths + ".json");
-                                List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
-                                if (!string.IsNullOrEmpty(jsonContent))
+                                if (!string.IsNullOrEmpty(File.ReadAllText(paths + ".json")))
                                 {
+                                    string jsonContent = File.ReadAllText(paths + ".json");
+                                    List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonContent);
                                     words.AddRange(listObject);
                                 }
                             }
@@ -454,16 +454,7 @@ namespace LanguageApp
 
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                    if (choose.KeyChar == '0')
-                    { 
-                        File.WriteAllText(Path.Combine(path, fileName + ".json"), JsonConvert.SerializeObject(words));
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\n\nFile has been created\nClick enter to continue");
-                        Console.ReadKey();
-                        Console.ResetColor();
-                        break;
-                    } 
-                    else if(File.Exists(Path.Combine(path, fileName + ".json")))
+                    if(File.Exists(Path.Combine(path, fileName + ".json")))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\n\nFile is existing\nClick enter to continue");
@@ -471,15 +462,20 @@ namespace LanguageApp
                         Console.ResetColor();
                         continue;
                     }
+                    else if(choose.KeyChar == '0')
+                    {
+                        string jsonCreator = JsonConvert.SerializeObject(words);
+                        File.WriteAllText(Path.Combine(path, fileName + ".json"), jsonCreator);
+                    }
                     else
                     {
                         File.WriteAllText(Path.Combine(path, fileName + ".json"), File.ReadAllText(systemOp + ".json"));
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\n\nFile has been created\nClick enter to continue");
-                        Console.ReadKey();
-                        Console.ResetColor();
-                        break;
                     }
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\n\nFile has been created\nClick enter to continue");
+                    Console.ReadKey();
+                    Console.ResetColor();
+                    break;
                 }
             } while(true);
         } // Writing down file
@@ -494,81 +490,60 @@ namespace LanguageApp
                 string path = Console.ReadLine();
                 if (path == "0")
                     return;
-                else if (File.Exists(path))
-                {
-                    List<WordDescription> wordDescriptions = new List<WordDescription>();
-                    string json = File.ReadAllText(path);
-                    if (!string.IsNullOrEmpty(json))
-                    {
-                        try
-                        {
-                            bool acceptList = true;
-                            wordDescriptions = JsonConvert.DeserializeObject<List<WordDescription>>(json);
-                            do
-                            {
-                                acceptList = true;
-                                Console.Write("Choose category where list should be add W/E/D (0 to exit): ");
-                                ConsoleKeyInfo choose = new ConsoleKeyInfo();
-                                choose = Console.ReadKey();
-                                switch (choose.KeyChar.ToString().ToUpper())
-                                {
-                                    case "W":
-                                        jsonContent = "W.json";
-                                        break;
-                                    case "E":
-                                        jsonContent = "E.json";
-                                        break;
-                                    case "D":
-                                        jsonContent = "D.json";
-                                        break;
-                                    case "0":
-                                        return;
-                                    default:
-                                        acceptList = false;
-                                        break;
-                                }
-                                string jsonRead = File.ReadAllText(Path.Combine(systemOp,language,unit,jsonContent));
-                                if(string.IsNullOrEmpty(jsonRead) && acceptList)
-                                {
-                                    File.WriteAllText(Path.Combine(systemOp, language, unit, jsonContent), JsonConvert.SerializeObject(wordDescriptions));
-                                }
-                                else if(acceptList)
-                                {
-                                    string jsonRead2 = File.ReadAllText(Path.Combine(systemOp, language, unit, jsonContent));
-                                    List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonRead2);
-                                    listObject.AddRange(wordDescriptions);
-                                    File.WriteAllText(Path.Combine(systemOp, language, unit, "W.json"), JsonConvert.SerializeObject(listObject));
-                                }
-                            } while (!acceptList);
-                            
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            continue;
-                        }
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("File has been added\nClick enter to continue");
-                        Console.ReadKey();
-                        Console.ResetColor();
-                        break;
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nFile is empty\nClick enter to continue");
-                        Console.ReadKey();
-                        Console.ResetColor();
-                        break;
-                    }
-                }
+                else if (path == "")
+                    continue;
+                else if (!File.Exists(path))
+                    continue;
                 else
                 {
-                    Console.WriteLine("File doesn't exist");
-                    Console.ReadKey();
-                    continue;
+                    try
+                    {
+                        string jsonFile = File.ReadAllText(path);
+                        List<WordDescription> listObject = JsonConvert.DeserializeObject<List<WordDescription>>(jsonFile);
+                        foreach (var word in listObject)
+                        {
+                            switch(word.Category)
+                            {
+                                case CategoryType.Word:
+                                    jsonContent = "W.json";
+                                    break;
+                                case CategoryType.Expression:
+                                    jsonContent = "E.json";
+                                    break;
+                                case CategoryType.Diffrent:
+                                    jsonContent = "D.json";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            string jsonRead = File.ReadAllText(Path.Combine(systemOp, language, unit, jsonContent));
+                            if (string.IsNullOrEmpty(jsonRead))
+                            {
+                                string serialized = JsonConvert.SerializeObject(word);
+                                File.WriteAllText(Path.Combine(systemOp, language, unit, jsonContent), serialized);
+                            }
+                            else
+                            {
+                                string deserialized = File.ReadAllText(Path.Combine(systemOp, language, unit, jsonContent));
+                                List<WordDescription> mainlistObject = JsonConvert.DeserializeObject<List<WordDescription>>(deserialized);
+                                mainlistObject.Add(word);
+                                string serialized = JsonConvert.SerializeObject(mainlistObject);
+                                File.WriteAllText(Path.Combine(systemOp, language, unit, jsonContent), serialized);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        
+                        continue;
+                    }
                 }
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n\nFile has been added\nClick enter to continue");
+                Console.ReadKey();
+                Console.ResetColor();
+                break;
 
             } while (true); 
         }

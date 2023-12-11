@@ -77,7 +77,7 @@ internal class Program
                             {
                                 continue;
                             }
-                            else if(numberOfWords == 0)
+                            else if (numberOfWords == 0)
                             {
                                 break;
                             }
@@ -92,7 +92,7 @@ internal class Program
                         }
                         else
                             continue;
-                    } while(true)
+                    } while (true);
                     break;
                 case '3':
                     Review.MainReview(actualData[1], systemOp, unitName);
