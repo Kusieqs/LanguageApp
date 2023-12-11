@@ -9,7 +9,7 @@ internal class Program
         List<Language> Languages = new List<Language>();
 
         #region Data Reading
-        bool firstTimeBool = false, end = true;
+        bool end = true;
 
         string systemData = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string systemOp = Path.Combine(systemData, "Desktop");
@@ -17,27 +17,12 @@ internal class Program
         string[] actualData = new string[2];
         #endregion
         Language actualLanguage = new Language();
-        FirstTime(ref systemOp, ref firstTimeBool, ref Languages); 
-
+        FirstTime(ref systemOp,ref Languages); 
         OverridingLanguages(systemOp, ref Languages);
-        if (firstTimeBool)
-        {
-            actualLanguage= new Language(LanguageName.English.ToString(), 'E');
-            Console.Clear();
-            Console.WriteLine("Hi! I would like you to enter the first 5 words to learn in the future (English)!");
-            Thread.Sleep(2600);
-            unitName = "Unit1";
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine("Words:\n\n");
-                WorkingClass.AddingWord(actualLanguage, unitName, systemOp, "E");
-            }
-        }
-        firstTimeBool = false;
         do
         {
             bool correctUnit = true;
-            WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
+            WorkingClass.WhichLanguage(systemOp, ref Languages, ref actualData);
             char.TryParse(actualData[1], out char charLanguage);
             Enum.TryParse(actualData[0], out LanguageName languageName);
             actualLanguage = new Language(languageName, charLanguage);
@@ -109,7 +94,7 @@ internal class Program
                     do
                     {
                         bool correctUnit = true;
-                        WorkingClass.WhichLanguage(systemOp, ref Languages, firstTimeBool, ref actualData);
+                        WorkingClass.WhichLanguage(systemOp, ref Languages, ref actualData);
                         WorkingClass.ChoosingUnit(systemOp, actualData[0], out unitName,ref correctUnit);
                         if (!correctUnit)
                             continue;
@@ -132,7 +117,7 @@ internal class Program
         } while (end); 
 
     }
-    public static void FirstTime(ref string systemOp, ref bool firstTimeBool, ref List<Language> languages)
+    public static void FirstTime(ref string systemOp, ref List<Language> languages)
     {
 
         if (!Directory.Exists(Path.Combine(systemOp, "LanguageApp"))) 
@@ -156,7 +141,6 @@ internal class Program
             File.WriteAllText(Path.Combine(systemOp, "E", "Unit1", "E.json"), test);
             File.WriteAllText(Path.Combine(systemOp, "E", "Unit1", "D.json"), test);
 
-            firstTimeBool = true;
         }
         else
         {

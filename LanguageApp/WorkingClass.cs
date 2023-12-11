@@ -10,7 +10,7 @@ namespace LanguageApp
 {
     public static class WorkingClass
     {
-        public static void WhichLanguage(string systemOp, ref List<Language> languages, bool firstTime, ref string[] actualData)
+        public static void WhichLanguage(string systemOp, ref List<Language> languages, ref string[] actualData)
         {
             Array.Clear(actualData);
             string returnLanguage = null;
@@ -537,7 +537,10 @@ namespace LanguageApp
                     }
                     catch (Exception e)
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Error: {e.Message}");
+                        Console.ReadKey();
+                        Console.ResetColor();
                         return;
                     }
                 }
