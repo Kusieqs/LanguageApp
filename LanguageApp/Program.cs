@@ -6,15 +6,14 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        List<Language> Languages = new List<Language>();
-
         #region Data Reading
+        List<Language> Languages = new List<Language>();
         bool end = true;
-
         string systemData = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string systemOp = Path.Combine(systemData, "Desktop");
         string unitName;
         string[] actualData = new string[2];
+        bool exit = false;
         #endregion
         Language actualLanguage = new Language();
         FirstTime(ref systemOp,ref Languages); 
@@ -46,7 +45,8 @@ internal class Program
             switch (result.KeyChar)
             {
                 case '1':
-                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
+                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1],ref exit);
+                    exit = false;
                     break;
 
                 case '2':
@@ -59,18 +59,19 @@ internal class Program
                         if (correctNumber)
                         {
                             if (numberOfWords < 0 || numberOfWords > 20)
-                            {
                                 continue;
-                            }
                             else if (numberOfWords == 0)
-                            {
                                 break;
-                            }
                             else
                             {
                                 for (int i = 0; i < numberOfWords; i++)
                                 {
-                                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1]);
+                                    WorkingClass.AddingWord(actualLanguage, unitName, systemOp, actualData[1],ref exit);
+                                    if (exit)
+                                    {
+                                        exit = false;
+                                        break;
+                                    }
                                 }
                             }
                             break;

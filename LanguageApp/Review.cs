@@ -63,23 +63,15 @@ namespace LanguageApp
             if (!string.IsNullOrEmpty(json))
                 mainList = JsonConvert.DeserializeObject<List<WordDescription>>(json);
 
-
-
             if (mainList.Count > 0)
             {
 
                 if (legendary)
-                {
                     LegendaryLvl(ref mainList);
-                }
                 else if (mistakeLvl)
-                {
                     MistakeLevel(ref mainList);
-                }
                 else
-                {
                     Levels(min, max, ref mainList);
-                }
 
                 string jsonWriter = JsonConvert.SerializeObject(mainList);
                 File.WriteAllText(Path.Combine(systemOp, language, unit, category+".json"), jsonWriter);
@@ -144,6 +136,7 @@ namespace LanguageApp
                     {
                         goingToExit = false;
                         attempt = AnswerWord(ref goingToExit, words.WordInYourLanguage, howManyAttempts);
+
                         if (goingToExit)
                             return;
 
@@ -155,9 +148,7 @@ namespace LanguageApp
                             mistakes++;
                         }
                         else
-                        {
                             CorrectAnswer(ref correctAnswer);
-                        }
 
                     } while (!correctAnswer);
                 }
@@ -178,9 +169,7 @@ namespace LanguageApp
                             mistakes++;
                         }
                         else
-                        {
                             CorrectAnswer(ref correctAnswer);
-                        }
                     } while (!correctAnswer);
                     correctAnswer = false;
                 }
@@ -231,11 +220,7 @@ namespace LanguageApp
                             mainList[randomWord].Mistakes += 1;
                         }
                         else
-                        {
                             CorrectAnswer(ref correctAnswer);
-                        }
-
-
                     } while (!correctAnswer);
                 }
                 else if(wordInYourLanguage || whichOne == 0)
@@ -255,10 +240,7 @@ namespace LanguageApp
                             mainList[randomWord].Mistakes += 1;
                         }
                         else
-                        {
                             CorrectAnswer(ref correctAnswer);
-                        }
-
                     } while (!correctAnswer);
 
                 }
@@ -309,9 +291,7 @@ namespace LanguageApp
                             words.Mistakes += 1;
                         }
                         else
-                        {
                             CorrectAnswer(ref correctAnswer);
-                        }
                     } while (!correctAnswer);
                 }
                 else if(wordInYourLanguage || whichOne == 1)
@@ -332,9 +312,7 @@ namespace LanguageApp
                             words.Mistakes += 1;
                         }
                         else
-                        {
                             CorrectAnswer(ref correctAnswer);
-                        }
                     } while (!correctAnswer);
 
                 }
@@ -379,7 +357,7 @@ namespace LanguageApp
             {
                 Console.Clear();
                 Console.WriteLine("Choose one of the options:\n\n\n");
-                Console.Write($"1.You have to write word in your language\n\n2. You have to write word in another language\n\n3. Mix with words\n\n0. Exit\n\nNumber: ");
+                Console.Write($"1. You have to write word in your language\n\n2. You have to write word in another language\n\n3. Mix with words\n\n0. Exit\n\nNumber: ");
                 key = Console.ReadLine();
                 switch (key)
                 {
@@ -412,7 +390,7 @@ namespace LanguageApp
             }
             Console.ResetColor();
             Console.ReadKey();
-        }
+        }// method to show uncorrect answer
         private static string AnswerWord(ref bool exit, string word, int howManyAttempts)
         {
             Console.Clear();
@@ -425,7 +403,7 @@ namespace LanguageApp
                 return "";
             }
             return attempt; 
-        }
+        } // method to write answer
 
     }
 }
