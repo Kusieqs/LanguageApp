@@ -20,7 +20,6 @@ namespace LanguageApp
 		Expression,
 		Diffrent,
 		Nothing
-
 	}
 }
 

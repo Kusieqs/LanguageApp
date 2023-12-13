@@ -31,14 +31,11 @@ namespace LanguageApp
                 if (result.KeyChar == '+')
                 {
                     WhichLanguageNewLanguage(returnChar, returnLanguage, ref languages, systemOp);
-
                     string json = JsonConvert.SerializeObject(languages);
                     File.WriteAllText(Path.Combine(systemOp, "Languages.json"), json);
                 }
                 else if(result.KeyChar == '0')
-                {
                     Environment.Exit(0);
-                }
 
                 else
                 {
@@ -51,8 +48,6 @@ namespace LanguageApp
                         }
                     }
                 }
-
-
             } while (actualData[0] == null || actualData[1] == null); 
             Console.Clear();
         }// Choosing language
@@ -62,20 +57,21 @@ namespace LanguageApp
             do
             {
                 Console.Clear();
-                Console.Write("Choose 0 to exit or write language: ");
+                Console.Write("Write name of language (0 to exit): ");
                 namelanguage = Console.ReadLine().ToLower();
 
                 if (namelanguage == "")
                     continue;
+                else if (namelanguage == "0")
+                    break;
 
                 namelanguage = char.ToUpper(namelanguage[0]) + namelanguage.Substring(1);
 
-                if (namelanguage == "0")
-                    break;
 
                 bool correctEnum = Enum.TryParse(namelanguage, out LanguageName nameLanguage); 
                 if (correctEnum == false)
                 {
+                    Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\nWrong language in our data\nCLICK ENTER TO CONTINUE");
                     Console.ReadKey();
@@ -87,23 +83,23 @@ namespace LanguageApp
 
                 if (charlanguage == "0")
                     break;
+
                 else if (charlanguage.Length > 1)
                 {
+                    Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\nWrong index \nCLICK ENTER TO CONTINUE");
+                    Console.WriteLine("\nWrong index\nCLICK ENTER TO CONTINUE");
                     Console.ReadKey();
                     Console.ResetColor();
                     continue;
                 }   
 
-
                 foreach (var languageName in languages)
                 {
-
                     if (languageName.Language1 == namelanguage || languageName.CharLanguage.ToString() == charlanguage.ToString())
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\n\nThis language or index are already exist\nCLICK ENTER TO CONTINUE");
+                        Console.WriteLine("\n\nThis language or index is already exist\nCLICK ENTER TO CONTINUE");
                         Console.ReadKey();
                         Console.ResetColor();
                     }
@@ -129,7 +125,7 @@ namespace LanguageApp
             {
                 List<string> foldersNames = new List<string>();
                 Console.Clear();
-                Console.WriteLine("If you want to create new Unit write 0 or choose one of this: \n\n\nUnits:\n\n-1.\tExit\n 0.\tNew unit\n\n");
+                Console.WriteLine("Choose one of this options:\n\n\nUnits:\n\n-1.\tExit\n 0.\tNew unit\n\n");
                 string[] Folders = Directory.GetDirectories(Path.Combine(systemOp, language[0].ToString()));
                 foreach (var direct in Folders)
                 {
@@ -140,9 +136,11 @@ namespace LanguageApp
                     Console.WriteLine($" {i + 1}.\t{foldersNames[i]}");
                     
                 }
+
                 int maxUnit = foldersNames.Count;
                 Console.Write("\n\nNumber: ");
                 bool unitChoosing = int.TryParse(Console.ReadLine(), out int correctUnit);
+
                 if (unitChoosing == false)
                     continue;
                 else if (correctUnit > foldersNames.Count || correctUnit < -1)
@@ -200,13 +198,12 @@ namespace LanguageApp
             } while (unitBool == false);
 
         }// choosing unit
-        public static void AddingWord(Language language, string unit, string systemOp, string lanChar) 
+        public static void AddingWord(Language language, string unit, string systemOp, string lanChar,ref bool exit) 
         {
+            Console.Clear();
             string word, wordInYourLanguage, category;
             CategoryType categoryName;
-            Console.Clear();
             bool correct = false;
-            bool exit = false;
             WordWriting(out word, out wordInYourLanguage,ref exit);
             if(exit == true)
                 return;
@@ -216,10 +213,7 @@ namespace LanguageApp
             do
             {
                 Console.Clear();
-
-
-                Console.Clear();
-                Console.WriteLine($"\nInformation:\n\n{word} - {wordInYourLanguage}\n\nCategory: {categoryName}\nUnit: {unit}"); ///Information About Word/Expresion
+                Console.WriteLine($"\nInformations:\n\n{word} - {wordInYourLanguage}\n\nCategory: {categoryName}\nUnit: {unit}"); ///Information About Word/Expresion
                 Console.Write("\n\nDo you accept a new word? Y/N");
 
 
@@ -351,7 +345,7 @@ namespace LanguageApp
             do
             {
                 Console.Clear();
-                Console.Write($"Write '-' to exit\n\nWrite a word in another language:    ");
+                Console.Write($"Write '-' to exit\n\nWrite word in another language:    ");
                 word = Console.ReadLine();
                 if(word == "-")
                 {
@@ -360,11 +354,12 @@ namespace LanguageApp
                     return;
                 }
             } while (word.Length == 0);
+
             do
             {
                 Console.Clear();
-                Console.Write($"Write '-' to exit\n\nWrite a word in another language:    " + word);
-                Console.Write($"\n\nWrite a word in your language:    ");
+                Console.Write($"Write '-' to exit\n\nWrite word in another language:    " + word);
+                Console.Write($"\n\nWrite word in your language:    ");
                 wordInYourLanguage = Console.ReadLine();
                 if (wordInYourLanguage == "-")
                 {
@@ -380,9 +375,9 @@ namespace LanguageApp
             do
             {
                 Console.Clear();
-                Console.Write($"Write '-' to exit\n\nWrite a word in another language:    " + word);
-                Console.Write($"\n\nWrite a word in your language:    " + wordInYourLanguage);
-                Console.WriteLine("\n\nChoose a category of your word: Word,Expression,Diffrent (W/E/D)");
+                Console.Write($"Write '-' to exit\n\nWrite word in another language:    " + word);
+                Console.Write($"\n\nWrite word in your language:    " + wordInYourLanguage);
+                Console.WriteLine("\n\nChoose category of your word: Word,Expression,Diffrent (W/E/D)");
                 ConsoleKeyInfo choose = new ConsoleKeyInfo();
                 choose = Console.ReadKey();
 
@@ -551,7 +546,7 @@ namespace LanguageApp
                 break;
 
             } while (true); 
-        }
+        } // Reading file
 
     }
 }
